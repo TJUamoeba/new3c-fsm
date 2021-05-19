@@ -36,6 +36,10 @@ ModuleUtil.LoadModules(Framework.Client)
 ModuleUtil.LoadModules(Define)
 ModuleUtil.LoadXlsModules(Xls, Config)
 
+-- Fsm
+ModuleUtil.LoadModules(Module.Fsm_Module)
+ModuleUtil.LoadModules(Module.Fsm_Module.PlayerActFsm)
+
 -- Server and Clinet Modules
 ModuleUtil.LoadModules(Module.S_Module)
 ModuleUtil.LoadModules(Module.Cls_Module)

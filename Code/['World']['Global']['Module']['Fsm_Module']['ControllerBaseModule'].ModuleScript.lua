@@ -17,6 +17,7 @@ function ControllerBase:initialize(_baseLayerStateModule)
     self.baseLayerState = tempStateClass:new(_baseLayerStateModule, _baseLayerStateModule.Name, self.params)
     self.lastState = nil
     self.curState = nil
+    self:SetDefaultState()
 end
 
 --添加变量
@@ -46,8 +47,8 @@ function ControllerBase:ChangeParam(_paramName, _value)
 end
 
 --初始化默认状态
-function ControllerBase:SetDefaultState(_state)
-    self.curState = _state
+function ControllerBase:SetDefaultState()
+    self.curState = self.baseLayerState:CheckEntryCondition()
 end
 
 --更新当前状态

@@ -16,6 +16,17 @@ function StateBase:initialize(_stateModule, _stateName, _params, _parantState)
     self:ConnectTransitions(_stateModule, _params)
 end
 
+
+--绑定所有SubStates
+function StateBase:ConnectSubStates(_stateModule, _params)
+    if _stateModule.States then
+        for stateName, stateModule in pairs(_stateModule.States:GetChildren()) do
+            local tempStateClass = require(stateModule)
+            self.subStates[stateName] = tempStateClass:new(stateModule, stateName, _params, self)
+        end
+    end
+end
+
 --绑定所有Transitions
 function StateBase:ConnectTransitions(_stateModule, _params)
     if _stateModule.AnyState then
@@ -33,16 +44,6 @@ function StateBase:ConnectTransitions(_stateModule, _params)
     for k, v in pairs(_stateModule.Transitions:GetChildren()) do
         local tempTransitionClass = require(v)
         self.transitions[k] = tempTransitionClass:new(_params, self)
-    end
-end
-
---绑定所有SubStates
-function StateBase:ConnectSubStates(_stateModule, _params)
-    if _stateModule.States then
-        for stateName, stateModule in pairs(_stateModule.States:GetChildren()) do
-            local tempStateClass = require(stateModule)
-            self.subStates[stateName] = tempStateClass:new(stateModule, stateName, _params, self)
-        end
     end
 end
 

@@ -5,22 +5,23 @@
 local FsmMgr, this = ModuleUtil.New('FsmMgr', ClientBase)
 
 --- 变量声明
-
--- 玩家动作状态枚举
-local playerActStateEnum = {
-    IDLE = 'Idle',
-    WALK = 'Walk',
-    RUN = 'Run',
-    JUMP = 'Jump',
-    FLY = 'Fly',
-    SWIMIDLE = 'SwimIdle',
-    SWIMMING = 'Swimming',
-    SOCIAL = 'Social',
-    BOWIDLE = 'BowIdle',
-    BOWWALK = 'BowWalk',
-    BOWRUN = 'BowRun',
-    BOWJUMP = 'BowJump',
-    BOWATTACK = 'BowAttack'
+local params = {
+    ['isMove'] = {
+        value = false,
+        type = 2
+    },
+    ['isRun'] = {
+        value = false,
+        type = 2
+    },
+    ['jumpTrigger'] = {
+        value = false,
+        type = 3
+    },
+    ['isOnGround'] = {
+        value = false,
+        type = 2
+    }
 }
 
 --- 初始化
@@ -38,13 +39,15 @@ end
 --- 数据变量初始化
 function FsmMgr:DataInit()
     -- 玩家动作状态机
-    this.playerActFsm = PlayerActFsm:new()
+    this.playerActCtrl =
+        PlayerActController:new(world.Global.Module.Fsm_Module.PlayerActCtrl.State.PlayerActBaseLayerState)
+    for k, v in pairs(params) do
+        this.playerActCtrl:AddParam(k, v.type, v.value)
+    end
 
-    this.playerActFsm:ConnectStateFunc(Config.PlayerActState, Module.Fsm_Module.PlayerActFsm.State)
-    this.playerActFsm:SetDefaultState(playerActStateEnum.IDLE)
     world.OnRenderStepped:Connect(
         function(dt)
-            this.playerActFsm:Update(dt)
+            this.playerActCtrl:Update(dt)
         end
     )
 end
@@ -53,16 +56,10 @@ end
 function FsmMgr:EventBind()
 end
 
---- 状态机改变触发器
-function FsmMgr:FsmTriggerEventHandler(_state)
-    print('状态机改变触发器', _state)
-    this.playerActFsm:ContactTrigger(_state)
-end
-
 function FsmMgr:Update(dt)
-    --this.playerActFsm:Update(dt)
-    --print(this.playerActFsm.curState.stateName)
-    --print(this.playerActFsm.stateTrigger.BowAttack)
+    --this.playerActCtrl:Update(dt)
+    --print(this.playerActCtrl.curState.stateName)
+    --print(this.playerActCtrl.stateTrigger.BowAttack)
 end
 
 return FsmMgr

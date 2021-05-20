@@ -38,7 +38,7 @@ ModuleUtil.LoadXlsModules(Xls, Config)
 
 -- Fsm
 ModuleUtil.LoadModules(Module.Fsm_Module)
-ModuleUtil.LoadModules(Module.Fsm_Module.PlayerActFsm)
+--ModuleUtil.LoadModules(Module.Fsm_Module.PlayerActFsm)
 
 -- Server and Clinet Modules
 ModuleUtil.LoadModules(Module.S_Module)

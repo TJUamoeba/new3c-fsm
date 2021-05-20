@@ -2,16 +2,10 @@
 -- @module  PlayerActState
 -- @copyright Lilith Games, Avatar Team
 -- @author Dead Ratman
-local PlayerActState = class("PlayerActState", StateBase)
-
-function PlayerActState:OnEnter()
-    StateBase.OnEnter(self)
-    FsmMgr.playerActFsm:ResetTrigger()
-end
+local PlayerActState = class('PlayerActState', StateBase)
 
 ---监听静止
-function PlayerActState:IdleMonitor(_nextStateTypeName)
-    _nextStateTypeName = _nextStateTypeName or ""
+function PlayerActState:IdleMonitor()
     local dir = PlayerCtrl.finalDir
     dir.y = 0
     if dir.Magnitude > 0 then
@@ -20,49 +14,39 @@ function PlayerActState:IdleMonitor(_nextStateTypeName)
         end
         localPlayer:MoveTowards(Vector2(dir.x, dir.z))
     else
-        FsmMgr.playerActFsm:Switch(_nextStateTypeName .. "Idle")
+        FsmMgr.playerActCtrl:ChangeParam('isMove', false)
     end
 end
 
 ---监听移动
-function PlayerActState:MoveMonitor(_nextStateTypeName)
-    _nextStateTypeName = _nextStateTypeName or ""
+function PlayerActState:MoveMonitor()
     local dir = PlayerCtrl.finalDir
     dir.y = 0
     if dir.Magnitude > 0 then
-        FsmMgr.playerActFsm:Switch(_nextStateTypeName .. "Walk")
+        FsmMgr.playerActCtrl:ChangeParam('isMove', true)
     end
 end
 
 ---监听奔跑
-function PlayerActState:RunMonitor(_nextStateTypeName)
-    _nextStateTypeName = _nextStateTypeName or ""
+function PlayerActState:RunMonitor()
     if PlayerCtrl.finalDir.Magnitude >= 0.6 then
-        FsmMgr.playerActFsm:Switch(_nextStateTypeName .. "Run")
+        FsmMgr.playerActCtrl:ChangeParam('isRun', true)
     end
 end
 
 ---监听行走
-function PlayerActState:WalkMonitor(_nextStateTypeName)
-    _nextStateTypeName = _nextStateTypeName or ""
+function PlayerActState:WalkMonitor()
     if PlayerCtrl.finalDir.Magnitude < 0.6 then
-        FsmMgr.playerActFsm:Switch(_nextStateTypeName .. "Walk")
-    end
-end
-
----监听跳跃
-function PlayerActState:JumpMonitor(_nextStateTypeName)
-    _nextStateTypeName = _nextStateTypeName or ""
-    if FsmMgr.playerActFsm.stateTrigger.Jump and localPlayer.IsOnGround then
-        FsmMgr.playerActFsm:Switch(_nextStateTypeName .. "Jump")
+        FsmMgr.playerActCtrl:ChangeParam('isRun', false)
     end
 end
 
 ---监听着地
-function PlayerActState:OnGroundMonitor(_nextStateTypeName)
-    _nextStateTypeName = _nextStateTypeName or ""
+function PlayerActState:OnGroundMonitor()
     if localPlayer.IsOnGround then
-        FsmMgr.playerActFsm:Switch(_nextStateTypeName .. "Idle")
+        FsmMgr.playerActCtrl:ChangeParam('isOnGround', true)
+    else
+        FsmMgr.playerActCtrl:ChangeParam('isOnGround', false)
     end
 end
 

@@ -4,26 +4,6 @@
 --- @author Dead Ratman
 local FsmMgr, this = ModuleUtil.New('FsmMgr', ClientBase)
 
---- 变量声明
-local params = {
-    ['isMove'] = {
-        value = false,
-        type = 2
-    },
-    ['isRun'] = {
-        value = false,
-        type = 2
-    },
-    ['jumpTrigger'] = {
-        value = false,
-        type = 3
-    },
-    ['isOnGround'] = {
-        value = false,
-        type = 2
-    }
-}
-
 --- 初始化
 function FsmMgr:Init()
     print('FsmMgr:Init')
@@ -38,12 +18,9 @@ end
 
 --- 数据变量初始化
 function FsmMgr:DataInit()
-    -- 玩家动作状态机
-    this.playerActCtrl =
-        PlayerActController:new(world.Global.Module.Fsm_Module.PlayerActCtrl.State.PlayerActBaseLayerState)
-    for k, v in pairs(params) do
-        this.playerActCtrl:AddParam(k, v.type, v.value)
-    end
+    -- 玩家动作状态机控制器
+    this.playerActCtrl = PlayerActController:new(localPlayer.StateMachine, Module.Fsm_Module.PlayerActFsm.State)
+    this.playerActCtrl:SetDefState('IdleState')
 
     world.OnRenderStepped:Connect(
         function(dt)

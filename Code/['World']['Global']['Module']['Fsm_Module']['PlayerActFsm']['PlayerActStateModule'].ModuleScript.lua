@@ -4,18 +4,23 @@
 -- @author Dead Ratman
 local PlayerActState = class('PlayerActState', StateBase)
 
----监听静止
-function PlayerActState:IdleMonitor()
+function PlayerActState:initialize(_controller, _stateName)
+    print('ControllerBase:initialize()')
+    StateBase.initialize(self, _controller, _stateName)
+end
+
+---移动
+function PlayerActState:Move(_multiple)
     local dir = PlayerCtrl.finalDir
     dir.y = 0
-    if dir.Magnitude > 0 then
-        if PlayerCam:IsFreeMode() then
-            localPlayer:FaceToDir(dir, 4 * math.pi)
-        end
-        localPlayer:MoveTowards(Vector2(dir.x, dir.z))
+    if _multiple then
+        _multiple = _multiple * 0.6
     else
-        FsmMgr.playerActCtrl:ChangeParam('isMove', false)
+        _multiple = 0.6
     end
+
+    _multiple = PlayerCtrl.isSprint and _multiple / 0.6 or _multiple
+    localPlayer:AddMovementInput(dir, _multiple)
 end
 
 ---监听移动
@@ -23,31 +28,27 @@ function PlayerActState:MoveMonitor()
     local dir = PlayerCtrl.finalDir
     dir.y = 0
     if dir.Magnitude > 0 then
-        FsmMgr.playerActCtrl:ChangeParam('isMove', true)
-    end
-end
-
----监听奔跑
-function PlayerActState:RunMonitor()
-    if PlayerCtrl.finalDir.Magnitude >= 0.6 then
-        FsmMgr.playerActCtrl:ChangeParam('isRun', true)
-    end
-end
-
----监听行走
-function PlayerActState:WalkMonitor()
-    if PlayerCtrl.finalDir.Magnitude < 0.6 then
-        FsmMgr.playerActCtrl:ChangeParam('isRun', false)
-    end
-end
-
----监听着地
-function PlayerActState:OnGroundMonitor()
-    if localPlayer.IsOnGround then
-        FsmMgr.playerActCtrl:ChangeParam('isOnGround', true)
+        return true
     else
-        FsmMgr.playerActCtrl:ChangeParam('isOnGround', false)
+        return false
     end
+end
+
+---监听速度
+function PlayerActState:SpeedMonitor()
+    localPlayer.Avatar:SetParamValue('speedXZ', math.clamp((localPlayer.Velocity.Magnitude / 9), 0, 1))
+end
+
+---监听空中状态
+function PlayerActState:FallMonitor()
+    if not localPlayer.IsOnGround and localPlayer.Velocity.y < 0.5 then
+        self.controller:CallTrigger('JumpHighestState')
+    end
+end
+
+function PlayerActState:OnUpdate()
+    print(localPlayer.Velocity.Magnitude)
+    StateBase.OnUpdate(self)
 end
 
 return PlayerActState

@@ -27,10 +27,10 @@ end
 
 --切换状态
 function PlayerActController:Switch(_state)
-    if _state then
+    if _state and self.curState ~= _state then
         self.lastState = self.curState
-        self.machine:GotoState(self.machine:GetState(_state.stateName))
         self.curState = _state
+        self.machine:GotoState(self.statesInMachine[_state.stateName])
         self:ResetTrigger()
     end
 end

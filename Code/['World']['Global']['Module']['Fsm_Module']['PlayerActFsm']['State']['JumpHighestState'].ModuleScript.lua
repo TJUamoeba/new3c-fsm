@@ -20,6 +20,9 @@ end
 function JumpHighestState:OnUpdate(dt)
     PlayerActState.OnUpdate(self, dt)
     self:Move()
+    if self:MoveMonitor() then
+        localPlayer:AddImpulse(PlayerCtrl.finalDir * 20)
+    end
 end
 
 function JumpHighestState:OnLeave()

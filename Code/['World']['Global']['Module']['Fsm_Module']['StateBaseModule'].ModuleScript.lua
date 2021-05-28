@@ -24,8 +24,8 @@ function StateBase:AddTransition(_transitonName, _nextState, _dur, ...)
 end
 
 --增加一个anyState
-function StateBase:AddAnyState(_transitonName, _nextState, _dur, ...)
-    local transiton = TransitonBase:new(_transitonName, _nextState, _dur)
+function StateBase:AddAnyState(_transitonName, _dur, ...)
+    local transiton = TransitonBase:new(_transitonName, self, _dur)
     transiton:InitConditions(...)
     self.anyState[_transitonName] = transiton
 end
@@ -51,7 +51,6 @@ function StateBase:AnyStateCheck()
     end
     return nil
 end
-
 
 --进入状态
 function StateBase:OnEnter()

@@ -18,12 +18,16 @@ local LEFT_KEY = Enum.KeyCode.A
 local RIGHT_KEY = Enum.KeyCode.D
 local JUMP_KEY = Enum.KeyCode.Space
 local SPRINT_KEY = Enum.KeyCode.LeftShift
+local UP_KEY = Enum.KeyCode.Q
+local DOWN_KEY = Enum.KeyCode.E
 
 -- 键盘的输入值
 local moveForwardAxis = 0
 local moveBackAxis = 0
 local moveLeftAxis = 0
 local moveRightAxis = 0
+local upAxis = 0
+local downAxis = 0
 
 --- 初始化
 function PlayerCtrl:Init()
@@ -36,6 +40,7 @@ end
 function PlayerCtrl:DataInit()
     this.finalDir = Vector3.Zero
     this.isSprint = false
+    this.upright = 0
 end
 
 --- 节点事件绑定
@@ -56,6 +61,8 @@ function GetKeyValue()
     moveLeftAxis = Input.GetPressKeyData(LEFT_KEY) > 0 and 1 or 0
     moveRightAxis = Input.GetPressKeyData(RIGHT_KEY) > 0 and -1 or 0
     this.isSprint = Input.GetPressKeyData(SPRINT_KEY) == 2
+    upAxis = Input.GetPressKeyData(UP_KEY) == 2 and 1 or 0
+    downAxis = Input.GetPressKeyData(DOWN_KEY) == 2 and 1 or 0
     if localPlayer.State == Enum.CharacterState.Died then
         moveForwardAxis, moveBackAxis, moveLeftAxis, moveRightAxis = 0, 0, 0, 0
     end
@@ -68,11 +75,15 @@ function GetMoveDir()
     rightDir = Vector3(0, 1, 0):Cross(forwardDir)
     horizontal = GuiControl.joystick.Horizontal
     vertical = GuiControl.joystick.Vertical
+    this.upright = upAxis - downAxis
     if horizontal ~= 0 or vertical ~= 0 then
         this.finalDir = rightDir * horizontal + forwardDir * vertical
     else
         GetKeyValue()
         this.finalDir = forwardDir * (moveForwardAxis + moveBackAxis) - rightDir * (moveLeftAxis + moveRightAxis)
+        if this.finalDir.Magnitude > 0 then
+            this.finalDir = this.finalDir.Normalized
+        end
     end
 end
 

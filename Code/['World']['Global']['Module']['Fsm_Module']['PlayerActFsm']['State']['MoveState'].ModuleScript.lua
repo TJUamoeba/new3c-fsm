@@ -6,7 +6,7 @@ function MoveState:initialize(_controller, _stateName)
         {'anim_woman_idle_01', 0.0, 1.0},
         {'anim_woman_walkfront_01', 0.15, 1.0},
         {'anim_woman_runfront_01', 0.5, 1.0},
-        {'anim_woman_sprint_01', 1.0, 1.0}
+        {'anim_woman_sprint_01', 1, 1.0}
     }
     self.animNode = PlayerAnimMgr:Create1DClipNode(anims, 'speedXZ')
 end

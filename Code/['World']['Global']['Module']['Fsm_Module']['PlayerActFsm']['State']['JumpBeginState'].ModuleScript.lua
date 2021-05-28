@@ -21,7 +21,7 @@ function JumpBeginState:OnLeave()
     PlayerActState.OnLeave(self)
     localPlayer:Jump()
     if self:MoveMonitor() then
-        localPlayer:AddImpulse(localPlayer.Forward * 500)
+        localPlayer:AddImpulse(localPlayer.Forward * 200)
     end
 end
 

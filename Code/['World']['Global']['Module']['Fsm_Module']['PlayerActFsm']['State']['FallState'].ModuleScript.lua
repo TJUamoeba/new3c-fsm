@@ -27,6 +27,7 @@ end
 function FallState:OnUpdate(dt)
     PlayerActState.OnUpdate(self, dt)
     self:Move()
+    self:SpeedMonitor()
     if self:MoveMonitor() then
         localPlayer:AddImpulse(PlayerCtrl.finalDir * 20)
     end

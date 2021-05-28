@@ -21,6 +21,7 @@ function JumpRiseState:OnUpdate(dt)
     PlayerActState.OnUpdate(self, dt)
     self:FallMonitor()
     self:Move()
+    self:SpeedMonitor()
 end
 
 function JumpRiseState:OnLeave()

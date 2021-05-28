@@ -4,25 +4,6 @@
 --- @author Dead Ratman
 local FsmMgr, this = ModuleUtil.New('FsmMgr', ClientBase)
 
---- 变量声明
-
--- 玩家动作状态枚举
-local playerActStateEnum = {
-    IDLE = 'Idle',
-    WALK = 'Walk',
-    RUN = 'Run',
-    JUMP = 'Jump',
-    FLY = 'Fly',
-    SWIMIDLE = 'SwimIdle',
-    SWIMMING = 'Swimming',
-    SOCIAL = 'Social',
-    BOWIDLE = 'BowIdle',
-    BOWWALK = 'BowWalk',
-    BOWRUN = 'BowRun',
-    BOWJUMP = 'BowJump',
-    BOWATTACK = 'BowAttack'
-}
-
 --- 初始化
 function FsmMgr:Init()
     print('FsmMgr:Init')
@@ -37,14 +18,13 @@ end
 
 --- 数据变量初始化
 function FsmMgr:DataInit()
-    -- 玩家动作状态机
-    this.playerActFsm = PlayerActFsm:new()
+    -- 玩家动作状态机控制器
+    this.playerActCtrl = PlayerActController:new(localPlayer.StateMachine, Module.Fsm_Module.PlayerActFsm.State)
+    this.playerActCtrl:SetDefState('IdleState')
 
-    this.playerActFsm:ConnectStateFunc(Config.PlayerActState, Module.Fsm_Module.PlayerActFsm.State)
-    this.playerActFsm:SetDefaultState(playerActStateEnum.IDLE)
     world.OnRenderStepped:Connect(
         function(dt)
-            this.playerActFsm:Update(dt)
+            this.playerActCtrl:Update(dt)
         end
     )
 end
@@ -53,16 +33,10 @@ end
 function FsmMgr:EventBind()
 end
 
---- 状态机改变触发器
-function FsmMgr:FsmTriggerEventHandler(_state)
-    print('状态机改变触发器', _state)
-    this.playerActFsm:ContactTrigger(_state)
-end
-
 function FsmMgr:Update(dt)
-    --this.playerActFsm:Update(dt)
-    --print(this.playerActFsm.curState.stateName)
-    --print(this.playerActFsm.stateTrigger.BowAttack)
+    --this.playerActCtrl:Update(dt)
+    --print(this.playerActCtrl.curState.stateName)
+    --print(this.playerActCtrl.stateTrigger.BowAttack)
 end
 
 return FsmMgr

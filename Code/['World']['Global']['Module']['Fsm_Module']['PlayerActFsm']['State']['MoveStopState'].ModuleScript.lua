@@ -1,45 +1,5 @@
 local MoveStopState = class('MoveStopState', PlayerActState)
 
---获取停步时哪只脚在前以及双脚间距
-local function GetStopInfo()
-    local lToe = localPlayer.Avatar.Bone_L_Toe0
-    local rToe = localPlayer.Avatar.Bone_R_Toe0
-    local toeDir = Vector2(lToe.Position.x - rToe.Position.x, lToe.Position.z - rToe.Position.z)
-    local fDir = Vector2(localPlayer.Avatar.Forward.x, localPlayer.Avatar.Forward.z)
-    local dis = Vector2(lToe.Position.x - rToe.Position.x, lToe.Position.z - rToe.Position.z).Magnitude
-    local stopL, stopDis = (Vector2.Angle(toeDir, fDir) < 90), dis
-    return stopL, stopDis
-end
-
---确定该播放哪个停步动作
-local function GetStopIndex()
-    local stopSSpeed = 0.6
-    local stopRSpeed = 0.3
-    local stopDisGap = 0.7
-
-    local index = 1
-    local stopL, stopDis = GetStopInfo()
-    local speedXZ = math.clamp(localPlayer.Velocity.Magnitude / 12, 0, 1)
-    if speedXZ > stopSSpeed then
-        if stopDis > stopDisGap then
-            index = 3
-        else
-            index = 3
-        end
-    elseif speedXZ > stopRSpeed then
-        if stopDis > stopDisGap then
-            index = 2
-        else
-            index = 4
-        end
-    else
-        index = 1
-    end
-    index = index + (stopL and 0 or 4)
-
-    return index, stopL
-end
-
 function MoveStopState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
     self.anims = {
@@ -67,11 +27,19 @@ function MoveStopState:InitData()
             return self:MoveMonitor()
         end
     )
+    self:AddTransition(
+        'ToCrouchBeginState',
+        self.controller.states['CrouchBeginState'],
+        -1,
+        function()
+            return self.controller.isCrouch
+        end
+    )
 end
 
 function MoveStopState:OnEnter()
     PlayerActState.OnEnter(self)
-    local index = GetStopIndex()
+    local index = self:GetStopIndex()
     print(index, table.dump(self.anims[index]))
     PlayerAnimMgr:Play(self.animNode[index], 0, 1, self.anims[index][3], self.anims[index][3], true, false, 1)
 end

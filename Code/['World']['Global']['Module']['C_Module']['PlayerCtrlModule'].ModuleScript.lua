@@ -20,6 +20,7 @@ local JUMP_KEY = Enum.KeyCode.Space
 local SPRINT_KEY = Enum.KeyCode.LeftShift
 local UP_KEY = Enum.KeyCode.Q
 local DOWN_KEY = Enum.KeyCode.E
+local CROUCH_KEY = Enum.KeyCode.C
 
 -- 键盘的输入值
 local moveForwardAxis = 0
@@ -50,6 +51,9 @@ function PlayerCtrl:EventBind()
         function()
             if Input.GetPressKeyData(JUMP_KEY) == 1 then
                 this:PlayerJump()
+            end
+            if Input.GetPressKeyData(CROUCH_KEY) == 1 then
+                this:PlayerCrouch()
             end
         end
     )
@@ -95,6 +99,11 @@ end
 -- 冲刺逻辑
 function PlayerCtrl:PlayerSprint()
     FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
+end
+
+-- 下蹲逻辑
+function PlayerCtrl:PlayerCrouch()
+    FsmMgr.playerActCtrl:SwitchCrouch()
 end
 
 function PlayerCtrl:Update(dt)

@@ -11,6 +11,8 @@ function PlayerActController:initialize(_stateMachineNode, _folder)
     for k, v in pairs(self.states) do
         self.triggers[k] = false
     end
+    self.foot = 2
+    self.isCrouch = false
 end
 
 function PlayerActController:CallTrigger(_stateName)
@@ -22,6 +24,16 @@ end
 function PlayerActController:ResetTrigger()
     for k, v in pairs(self.states) do
         self.triggers[k] = false
+    end
+end
+
+
+---开关下蹲
+function PlayerActController:SwitchCrouch()
+    if self.isCrouch then
+        self.isCrouch = false
+    else
+        self.isCrouch = true
     end
 end
 

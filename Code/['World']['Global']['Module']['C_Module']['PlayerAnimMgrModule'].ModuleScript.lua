@@ -117,7 +117,7 @@ end
 
 --创建一个包含单个动作的混合空间节点,并设置动作速率
 function PlayerAnimMgr:CreateSingleClipNode(_animName, _speed)
-    local node = localPlayer.Avatar:AddBlendSpaceSingleNode()
+    local node = localPlayer.Avatar:AddBlendSpaceSingleNode(false)
     node:AddClipSingle(_animName, _speed or 1)
     return node
 end

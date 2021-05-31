@@ -43,6 +43,7 @@ function SwimIdleState:OnEnter()
         localPlayer.CharacterWidth = 2
         localPlayer.CharacterHeight = 2
         localPlayer.Avatar.LocalPosition = Vector3(0, 1, -0.7)
+        localPlayer.RotationRate = EulerDegree(0, 240, 0)
     end
 
     PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)

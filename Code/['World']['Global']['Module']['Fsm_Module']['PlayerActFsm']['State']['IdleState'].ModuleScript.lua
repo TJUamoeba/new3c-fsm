@@ -30,10 +30,19 @@ function IdleState:InitData()
             return self.controller.isCrouch
         end
     )
+    self:AddTransition(
+        'ToFlyBeginState',
+        self.controller.states['FlyBeginState'],
+        -1,
+        function()
+            return self.controller.triggers['FlyBeginState']
+        end
+    )
 end
 
 function IdleState:OnEnter()
     PlayerActState.OnEnter(self)
+    localPlayer:SetMovementMode(Enum.MovementMode.MOVE_Walking)
     PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)
     self:FallMonitor()
 end

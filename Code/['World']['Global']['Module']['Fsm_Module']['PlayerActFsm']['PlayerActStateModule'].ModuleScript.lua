@@ -89,10 +89,23 @@ function PlayerActState:Swim(_multiple)
     localPlayer:AddMovementInput(dir, _multiple or 1)
 end
 
+---飞行
+function PlayerActState:Fly(_multiple)
+    local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
+    local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
+    if _multiple then
+        _multiple = _multiple * 0.6
+    else
+        _multiple = 0.6
+        _multiple = PlayerCtrl.isSprint and _multiple / 0.6 or _multiple
+    end
+    localPlayer:AddMovementInput(dir, _multiple)
+end
+
 ---沉浮
 function PlayerActState:UpAndDown()
     local lvY = PlayerCtrl.upright
-    if localPlayer.Position.y > waterData.rangeMax.y - 3 and lvY > 0 then
+    if localPlayer:IsSwimming() and localPlayer.Position.y > waterData.rangeMax.y - 3 and lvY > 0 then
         lvY = 0
     end
     localPlayer:AddMovementInput(Vector3(0, lvY, 0))
@@ -107,6 +120,19 @@ function PlayerActState:MoveMonitor()
     else
         return false
     end
+end
+
+--监听是否在地面上
+function PlayerActState:FloorMonitor(_dis)
+    local startPos = localPlayer.Position
+    local endPos = localPlayer.Position + Vector3.Down * (_dis or 0.03)
+    local hitResult = Physics:RaycastAll(startPos, endPos, true)
+    for i, v in pairs(hitResult.HitObjectAll) do
+        if v.Block and v ~= localPlayer then
+            return true
+        end
+    end
+    return false
 end
 
 ---监听游泳
@@ -135,11 +161,13 @@ function PlayerActState:SpeedMonitor()
     localPlayer.Avatar:SetParamValue('speedY', math.clamp((velocity.y / 10), -1, 1))
     velocity.y = 0
     localPlayer.Avatar:SetParamValue('speedXZ', math.clamp((velocity.Magnitude / 9), 0, 1))
+    velocity = math.cos(math.rad(Vector3.Angle(velocity, localPlayer.Left))) * velocity.Magnitude
+    localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / 9), -1, 1))
 end
 
----监听空中状态
+---监听下落状态
 function PlayerActState:FallMonitor()
-    if not localPlayer.IsOnGround and localPlayer.Velocity.y < 0.5 then
+    if not self:FloorMonitor() and localPlayer.Velocity.y < 0.5 then
         self.controller:CallTrigger('JumpHighestState')
     end
 end

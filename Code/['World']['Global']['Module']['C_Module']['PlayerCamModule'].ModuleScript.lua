@@ -42,7 +42,8 @@ end
 function PlayerCam:IsFreeMode()
     return (this.curCamera.CameraMode == Enum.CameraMode.Social and this.curCamera.Distance >= 0) or
         this.curCamera.CameraMode == Enum.CameraMode.Orbital or
-        this.curCamera.CameraMode == Enum.CameraMode.Custom
+        this.curCamera.CameraMode == Enum.CameraMode.Custom or
+        this.curCamera.CameraMode == Enum.CameraMode.Smart
 end
 
 -- 滑屏转向
@@ -62,6 +63,16 @@ function PlayerCam:CameraZoom(_pos1, _pos2, _dis, _speed)
     if this.curCamera.CameraMode == Enum.CameraMode.Social then
         this.curCamera.Distance = this.curCamera.Distance - _dis / 50
     end
+end
+
+-- 冲刺缩放
+function PlayerCam:CameraFOVZoom(_fovChange, _maxFov)
+    if _fovChange > 0 and this.curCamera.FieldOfView > _maxFov + 1 then
+        _fovChange = -0.2
+    elseif _fovChange > 0 and this.curCamera.FieldOfView > _maxFov then
+        _fovChange = 0
+    end
+    this.curCamera.FieldOfView = math.clamp(this.curCamera.FieldOfView + _fovChange, 60, 90)
 end
 
 -- 修改玩家当前相机

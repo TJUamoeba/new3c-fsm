@@ -20,9 +20,9 @@ local healthBarShowTime = 0
 function PlayerGuiDefault:Init()
     -- 获取本地玩家
     player = localPlayer
-    self:InitNameGui()
+    --[[self:InitNameGui()
     self:InitHealthBarGui()
-    self:InitListener()
+    self:InitListener()]]
 end
 
 -- 姓名板
@@ -40,8 +40,8 @@ end
 
 -- 初始化事件
 function PlayerGuiDefault:InitListener()
-    player.OnHealthChange:Connect(HealthChange)
-    world.OnRenderStepped:Connect(MainGui)
+    --player.OnHealthChange:Connect(HealthChange)
+    --world.OnRenderStepped:Connect(MainGui)
 end
 
 -- 姓名板的显示逻辑

@@ -40,9 +40,6 @@ function SwimIdleState:OnEnter()
     PlayerActState.OnEnter(self)
     if not localPlayer:IsSwimming() then
         localPlayer:SetSwimming(true)
-        localPlayer.CharacterWidth = 2
-        localPlayer.CharacterHeight = 2
-        localPlayer.Avatar.LocalPosition = Vector3(0, 1, -0.7)
         localPlayer.RotationRate = EulerDegree(0, 240, 0)
     end
 

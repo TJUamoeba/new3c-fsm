@@ -6,6 +6,14 @@ function LandState:initialize(_controller, _stateName)
     self.animMoveNode = PlayerAnimMgr:CreateSingleClipNode('anim_woman_jumpforwardtorun_01')
 end
 function LandState:InitData()
+    self:AddTransition(
+        'ToFlyBeginState',
+        self.controller.states['FlyBeginState'],
+        -1,
+        function()
+            return self.controller.triggers['FlyBeginState']
+        end
+    )
 end
 
 function LandState:OnEnter()
@@ -27,11 +35,12 @@ function LandState:OnEnter()
         )
         PlayerAnimMgr:Play(self.animIdleNode, 0, 1, 0.1, 0.1, true, false, 1)
     end
+    self.controller.jumpCount = localPlayer.JumpMaxCount
 end
 
 function LandState:OnUpdate(dt)
     PlayerActState.OnUpdate(self, dt)
-    self:Move(0.8)
+    self:Move()
 end
 
 function LandState:OnLeave()

@@ -21,6 +21,7 @@ local SPRINT_KEY = Enum.KeyCode.LeftShift
 local UP_KEY = Enum.KeyCode.Q
 local DOWN_KEY = Enum.KeyCode.E
 local CROUCH_KEY = Enum.KeyCode.C
+local FLY_KEY = Enum.KeyCode.F
 
 -- 键盘的输入值
 local moveForwardAxis = 0
@@ -54,6 +55,9 @@ function PlayerCtrl:EventBind()
             end
             if Input.GetPressKeyData(CROUCH_KEY) == 1 then
                 this:PlayerCrouch()
+            end
+            if Input.GetPressKeyData(FLY_KEY) == 1 then
+                this:PlayerFly()
             end
         end
     )
@@ -93,17 +97,24 @@ end
 
 -- 跳跃逻辑
 function PlayerCtrl:PlayerJump()
-    FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
-end
-
--- 冲刺逻辑
-function PlayerCtrl:PlayerSprint()
-    FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
+    print('jumpCount', FsmMgr.playerActCtrl.jumpCount)
+    if FsmMgr.playerActCtrl.jumpCount == 3 then
+        FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
+    elseif FsmMgr.playerActCtrl.jumpCount == 2 then
+        FsmMgr.playerActCtrl:CallTrigger('DoubleJumpState')
+    elseif FsmMgr.playerActCtrl.jumpCount == 1 then
+        FsmMgr.playerActCtrl:CallTrigger('DoubleJumpSprintState')
+    end
 end
 
 -- 下蹲逻辑
 function PlayerCtrl:PlayerCrouch()
     FsmMgr.playerActCtrl:SwitchCrouch()
+end
+
+-- 飞行逻辑
+function PlayerCtrl:PlayerFly()
+    FsmMgr.playerActCtrl:CallTrigger('FlyBeginState')
 end
 
 function PlayerCtrl:Update(dt)

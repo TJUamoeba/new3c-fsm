@@ -59,22 +59,18 @@ function PlayerActState:GetStopIndex()
 end
 
 ---移动
-function PlayerActState:Move(_multiple)
+function PlayerActState:Move(_isSprint)
+    _isSprint = _isSprint or false
     local dir = PlayerCtrl.finalDir
     dir.y = 0
-    if _multiple then
-        _multiple = _multiple * 0.6
+    if _isSprint then
+        if PlayerCtrl.isSprint then
+            localPlayer:AddMovementInput(dir, 1)
+        else
+            localPlayer:AddMovementInput(dir, 0.5)
+        end
     else
-        _multiple = 0.6
-        _multiple = PlayerCtrl.isSprint and _multiple / 0.6 or _multiple
-    end
-
-    local velocity = localPlayer.Velocity
-    velocity.y = 0
-    if math.clamp((velocity.Magnitude / 9), 0, 1) > 0.61 and PlayerCtrl.isSprint == false then
-        localPlayer:AddMovementInput(Vector3.Zero, _multiple)
-    else
-        localPlayer:AddMovementInput(dir, _multiple)
+        localPlayer:AddMovementInput(dir, 0.5)
     end
 end
 
@@ -83,16 +79,31 @@ function PlayerActState:Swim(_multiple)
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
     if self:IsWaterSuface() and lvY > 0 then
         lvY = 0
+        localPlayer.Velocity.y = 0
+    end
+    if self:FloorMonitor(3) and lvY < 0 then
+        lvY = 0
     end
     local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
     --print(dir)
     localPlayer:AddMovementInput(dir, _multiple or 1)
 end
 
+---飞行
+function PlayerActState:Fly()
+    local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
+    local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
+    if PlayerCtrl.isSprint then
+        localPlayer:AddMovementInput(dir, 1)
+    else
+        localPlayer:AddMovementInput(dir, 0.5)
+    end
+end
+
 ---沉浮
 function PlayerActState:UpAndDown()
     local lvY = PlayerCtrl.upright
-    if localPlayer.Position.y > waterData.rangeMax.y - 3 and lvY > 0 then
+    if localPlayer:IsSwimming() and localPlayer.Position.y > waterData.rangeMax.y - 2 and lvY > 0 then
         lvY = 0
     end
     localPlayer:AddMovementInput(Vector3(0, lvY, 0))
@@ -109,37 +120,51 @@ function PlayerActState:MoveMonitor()
     end
 end
 
+--监听是否在地面上
+function PlayerActState:FloorMonitor(_dis)
+    local startPos = localPlayer.Position
+    local endPos = localPlayer.Position + Vector3.Down * (_dis or 0.03)
+    local hitResult = Physics:RaycastAll(startPos, endPos, true)
+    for i, v in pairs(hitResult.HitObjectAll) do
+        if v.Block and v ~= localPlayer then
+            return true
+        end
+    end
+    return false
+end
+
 ---监听游泳
 function PlayerActState:SwimMonitor()
     if
         localPlayer.Position.x > waterData.rangeMin.x and localPlayer.Position.x < waterData.rangeMax.x and
             localPlayer.Position.y > waterData.rangeMin.y and
-            localPlayer.Position.y < waterData.rangeMax.y - 1 and
+            localPlayer.Position.y < waterData.rangeMax.y and
             localPlayer.Position.z > waterData.rangeMin.z and
             localPlayer.Position.z < waterData.rangeMax.z
      then
+        if self:FloorMonitor(0.1) and localPlayer.Position.y > waterData.rangeMax.y - 1.5 then
+            return false
+        end
         return true
     else
-        localPlayer.CharacterWidth = 0.5
-        localPlayer.CharacterHeight = 1.7
-        localPlayer.Avatar.LocalPosition = Vector3.Zero
-        localPlayer.RotationRate = EulerDegree(0, 540, 0)
-        localPlayer:SetSwimming(false)
         return false
     end
 end
 
 ---监听速度
-function PlayerActState:SpeedMonitor()
+function PlayerActState:SpeedMonitor(_maxSpeed)
     local velocity = localPlayer.Velocity
     localPlayer.Avatar:SetParamValue('speedY', math.clamp((velocity.y / 10), -1, 1))
     velocity.y = 0
-    localPlayer.Avatar:SetParamValue('speedXZ', math.clamp((velocity.Magnitude / 9), 0, 1))
+    localPlayer.Avatar:SetParamValue('speedXZ', math.clamp((velocity.Magnitude / (_maxSpeed or 9)), 0, 1))
+    --print(math.clamp((velocity.Magnitude / (_maxSpeed or 9)), 0, 1))
+    velocity = math.cos(math.rad(Vector3.Angle(velocity, localPlayer.Left))) * velocity.Magnitude
+    localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / (_maxSpeed or 9)), -1, 1))
 end
 
----监听空中状态
+---监听下落状态
 function PlayerActState:FallMonitor()
-    if not localPlayer.IsOnGround and localPlayer.Velocity.y < 0.5 then
+    if not self:FloorMonitor(0.5) and localPlayer.Velocity.y < 0.5 then
         self.controller:CallTrigger('JumpHighestState')
     end
 end

@@ -39,4 +39,9 @@ function TransitonBase:GetTransState(dt)
     return nil
 end
 
+--重置
+function TransitonBase:Reset()
+    self.curTime = 0
+end
+
 return TransitonBase

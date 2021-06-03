@@ -65,10 +65,8 @@ function PlayerActState:Move(_isSprint)
     dir.y = 0
     if _isSprint then
         if PlayerCtrl.isSprint then
-            print('Sprint')
             localPlayer:AddMovementInput(dir, 1)
         else
-            print('Not Sprint')
             localPlayer:AddMovementInput(dir, 0.5)
         end
     else

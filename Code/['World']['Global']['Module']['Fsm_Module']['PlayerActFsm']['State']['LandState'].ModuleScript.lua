@@ -35,6 +35,7 @@ function LandState:OnEnter()
         )
         PlayerAnimMgr:Play(self.animIdleNode, 0, 1, 0.1, 0.1, true, false, 1)
     end
+    self.controller.jumpCount = localPlayer.JumpMaxCount
 end
 
 function LandState:OnUpdate(dt)

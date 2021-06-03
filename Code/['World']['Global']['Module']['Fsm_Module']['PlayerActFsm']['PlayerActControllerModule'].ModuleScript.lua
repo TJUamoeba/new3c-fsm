@@ -13,6 +13,7 @@ function PlayerActController:initialize(_stateMachineNode, _folder)
     end
     self.foot = 2
     self.isCrouch = false
+    self.jumpCount = localPlayer.JumpMaxCount
 end
 
 function PlayerActController:CallTrigger(_stateName)
@@ -26,7 +27,6 @@ function PlayerActController:ResetTrigger()
         self.triggers[k] = false
     end
 end
-
 
 ---开关下蹲
 function PlayerActController:SwitchCrouch()

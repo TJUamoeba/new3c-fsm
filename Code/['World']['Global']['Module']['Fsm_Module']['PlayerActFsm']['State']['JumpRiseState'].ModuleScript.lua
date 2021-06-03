@@ -9,12 +9,13 @@ function JumpRiseState:initialize(_controller, _stateName)
     self.animNode = PlayerAnimMgr:Create1DClipNode(anims, 'speedXZ')
 end
 function JumpRiseState:InitData()
-    self:AddTransition('ToJumpHighestState', self.controller.states['JumpHighestState'], 0.1)
+    self:AddTransition('ToJumpHighestState', self.controller.states['JumpHighestState'], 0.2)
 end
 
 function JumpRiseState:OnEnter()
     PlayerActState.OnEnter(self)
     PlayerAnimMgr:Play(self.animNode, 0, 1, 0.1, 0.1, true, true, 1)
+    self.controller.jumpCount = self.controller.jumpCount - 1
 end
 
 function JumpRiseState:OnUpdate(dt)

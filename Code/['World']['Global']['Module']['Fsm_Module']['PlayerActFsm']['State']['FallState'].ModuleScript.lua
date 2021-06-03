@@ -17,6 +17,22 @@ function FallState:InitData()
             return localPlayer.IsOnGround
         end
     )
+    self:AddTransition(
+        'ToDoubleJumpState',
+        self.controller.states['DoubleJumpState'],
+        -1,
+        function()
+            return self.controller.triggers['DoubleJumpState']
+        end
+    )
+    self:AddTransition(
+        'ToDoubleJumpSprintState',
+        self.controller.states['DoubleJumpSprintState'],
+        -1,
+        function()
+            return self.controller.triggers['DoubleJumpSprintState']
+        end
+    )
 end
 
 function FallState:OnEnter()
@@ -28,9 +44,6 @@ function FallState:OnUpdate(dt)
     PlayerActState.OnUpdate(self, dt)
     self:Move()
     self:SpeedMonitor()
-    if self:MoveMonitor() then
-        localPlayer:AddImpulse(PlayerCtrl.finalDir * 20)
-    end
 end
 
 function FallState:OnLeave()

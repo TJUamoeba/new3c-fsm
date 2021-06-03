@@ -50,6 +50,7 @@ function IdleState:OnEnter()
     localPlayer:SetMovementMode(Enum.MovementMode.MOVE_Walking)
     PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)
     self:FallMonitor()
+    self.controller.jumpCount = localPlayer.JumpMaxCount
 end
 
 function IdleState:OnUpdate(dt)

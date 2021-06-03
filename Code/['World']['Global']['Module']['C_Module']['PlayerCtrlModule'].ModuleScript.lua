@@ -97,7 +97,14 @@ end
 
 -- 跳跃逻辑
 function PlayerCtrl:PlayerJump()
-    FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
+    print('jumpCount', FsmMgr.playerActCtrl.jumpCount)
+    if FsmMgr.playerActCtrl.jumpCount == 3 then
+        FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
+    elseif FsmMgr.playerActCtrl.jumpCount == 2 then
+        FsmMgr.playerActCtrl:CallTrigger('DoubleJumpState')
+    elseif FsmMgr.playerActCtrl.jumpCount == 1 then
+        FsmMgr.playerActCtrl:CallTrigger('DoubleJumpSprintState')
+    end
 end
 
 -- 下蹲逻辑

@@ -18,16 +18,26 @@ end
 
 --增加一个transition
 function StateBase:AddTransition(_transitonName, _nextState, _dur, ...)
-    local transiton = TransitonBase:new(_transitonName, _nextState, _dur)
+    local transiton = TransitonBase:new(self.stateName .. '_' .. _transitonName, _nextState, _dur)
     transiton:InitConditions(...)
-    self.transitions[_transitonName] = transiton
+    table.insert(self.transitions, transiton)
 end
 
 --增加一个anyState
 function StateBase:AddAnyState(_transitonName, _dur, ...)
-    local transiton = TransitonBase:new(_transitonName, self, _dur)
+    local transiton = TransitonBase:new(self.stateName .. '_' .. _transitonName, self, _dur)
     transiton:InitConditions(...)
-    self.anyState[_transitonName] = transiton
+    table.insert(self.anyState, transiton)
+end
+
+--重置transition和\anyState
+function StateBase:Reset()
+    for _, trans in pairs(self.transitions) do
+        trans:Reset()
+    end
+    for _, trans in pairs(self.anyState) do
+        trans:Reset()
+    end
 end
 
 --变化运行
@@ -55,6 +65,7 @@ end
 --进入状态
 function StateBase:OnEnter()
     print('进入' .. self.stateName)
+    self:Reset()
 end
 
 --更新状态

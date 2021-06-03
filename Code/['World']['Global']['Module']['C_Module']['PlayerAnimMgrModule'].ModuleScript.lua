@@ -18,17 +18,15 @@ end
 
 --- 数据变量初始化
 function PlayerAnimMgr:DataInit()
-    local anims = {
-        'new_anim_human_swim_freestyle_01',
-        'new_anim_human_swim_breaststroke_01',
-        'new_anim_human_idletofreestyle_01',
-        'new_anim_human_freestyletoidle_01',
-        'new_anim_human_idletobreaststroke_01',
-        'new_anim_human_breaststroketoidle_01',
-        'anim_human_sit_swim_goashore',
-        'new_anim_human_swim_intowater'
+    --[[local anims = {
+        'anim_human_swim_freestyle_01',
+        'anim_human_swim_breaststroke_01',
+        'anim_human_idletofreestyle_01',
+        'anim_human_freestyletoidle_01',
+        'anim_human_idletobreaststroke_01',
+        'anim_human_breaststroketoidle_01'
     }
-    this:ImportAnimation(anims, 'Animation/')
+    this:ImportAnimation(anims, 'Animation/')]]
 end
 
 --- 节点事件绑定
@@ -38,7 +36,6 @@ end
 --导入动画资源
 function PlayerAnimMgr:ImportAnimation(_anims, _path)
     for _, animaName in pairs(_anims) do
-        print(_path .. animaName)
         ResourceManager.GetAnimation(_path .. animaName)
     end
 end

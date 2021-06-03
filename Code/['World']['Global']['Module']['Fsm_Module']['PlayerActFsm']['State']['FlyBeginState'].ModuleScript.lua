@@ -5,7 +5,7 @@ function FlyBeginState:initialize(_controller, _stateName)
     self.animNode = PlayerAnimMgr:CreateSingleClipNode('anim_woman_jumptohover_01')
 end
 function FlyBeginState:InitData()
-    self:AddTransition('ToFlyIdleState', self.controller.states['FlyIdleState'], 0.2)
+    self:AddTransition('ToFlyIdleState', self.controller.states['FlyIdleState'], 0.4)
 end
 
 function FlyBeginState:OnEnter()
@@ -20,7 +20,8 @@ end
 
 function FlyBeginState:OnLeave()
     PlayerActState.OnLeave(self)
-    localPlayer:AddImpulse(Vector3(0, 100, 0))
+    localPlayer:LaunchCharacter(Vector3(0, 5, 0), false, false)
+    wait()
 end
 
 return FlyBeginState

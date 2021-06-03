@@ -43,7 +43,9 @@ end
 
 function SwimmingStartState:OnLeave()
     PlayerActState.OnLeave(self)
-    localPlayer:AddImpulse(localPlayer.Forward * 400)
+    if self:MoveMonitor() then
+        localPlayer:AddImpulse(localPlayer.Forward * 400)
+    end
 end
 
 return SwimmingStartState

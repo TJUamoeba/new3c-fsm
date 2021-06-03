@@ -30,9 +30,9 @@ end
 
 function FlyIdleState:OnEnter()
     PlayerActState.OnEnter(self)
-    localPlayer.RotationRate = EulerDegree(0, 100, 0)
     localPlayer:SetMovementMode(Enum.MovementMode.MOVE_Flying)
-    PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)
+    localPlayer.RotationRate = EulerDegree(0, 250, 0)
+    PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 0.5)
 end
 
 function FlyIdleState:OnUpdate(dt)

@@ -22,6 +22,14 @@ function CrouchIdleState:InitData()
             return not self.controller.isCrouch
         end
     )
+    self:AddTransition(
+        'ToFlyBeginState',
+        self.controller.states['FlyBeginState'],
+        -1,
+        function()
+            return self.controller.triggers['FlyBeginState']
+        end
+    )
 end
 
 function CrouchIdleState:OnEnter()

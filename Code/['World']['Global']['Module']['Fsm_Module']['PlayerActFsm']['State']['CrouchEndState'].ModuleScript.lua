@@ -6,6 +6,14 @@ function CrouchEndState:initialize(_controller, _stateName)
 end
 function CrouchEndState:InitData()
     self:AddTransition('ToIdleState', self.controller.states['IdleState'], 0.1)
+    self:AddTransition(
+        'ToFlyBeginState',
+        self.controller.states['FlyBeginState'],
+        -1,
+        function()
+            return self.controller.triggers['FlyBeginState']
+        end
+    )
 end
 
 function CrouchEndState:OnEnter()
@@ -20,6 +28,7 @@ end
 function CrouchEndState:OnLeave()
     PlayerActState.OnLeave(self)
     self.controller.foot = 2
+    localPlayer:UnCrouch()
 end
 
 return CrouchEndState

@@ -42,6 +42,11 @@ end
 
 function IdleState:OnEnter()
     PlayerActState.OnEnter(self)
+    localPlayer.CharacterWidth = 0.5
+    localPlayer.CharacterHeight = 1.7
+    localPlayer.Avatar.LocalPosition = Vector3.Zero
+    localPlayer.RotationRate = EulerDegree(0, 540, 0)
+    localPlayer:SetSwimming(false)
     localPlayer:SetMovementMode(Enum.MovementMode.MOVE_Walking)
     PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)
     self:FallMonitor()

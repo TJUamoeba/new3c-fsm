@@ -25,7 +25,7 @@ function FlySprintState:InitData()
         self.controller.states['FlyEndState'],
         -1,
         function()
-            return self:FloorMonitor(0.05)
+            return self:FloorMonitor(0.07)
         end
     )
 end
@@ -37,7 +37,7 @@ end
 
 function FlySprintState:OnUpdate(dt)
     PlayerActState.OnUpdate(self, dt)
-    self:SpeedMonitor()
+    self:SpeedMonitor(localPlayer.MaxFlySpeed)
     self:Fly()
 end
 function FlySprintState:OnLeave()

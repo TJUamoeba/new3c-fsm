@@ -2,7 +2,8 @@ local IdleState = class('IdleState', PlayerActState)
 
 function IdleState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
-    self.animNode = PlayerAnimMgr:CreateSingleClipNode('anim_woman_idle_01')
+    PlayerAnimMgr:CreateSingleClipNode('anim_man_idle_01', 1, _stateName, 1)
+    PlayerAnimMgr:CreateSingleClipNode('anim_woman_idle_01', 1, _stateName, 2)
 end
 
 function IdleState:InitData()
@@ -48,7 +49,7 @@ function IdleState:OnEnter()
     localPlayer.RotationRate = EulerDegree(0, 540, 0)
     localPlayer:SetSwimming(false)
     localPlayer:SetMovementMode(Enum.MovementMode.MOVE_Walking)
-    PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)
+    PlayerAnimMgr:Play(self.stateName, 0, 1, 0.2, 0.2, true, true, 1)
     self:FallMonitor()
     self.controller.jumpCount = localPlayer.JumpMaxCount
 end

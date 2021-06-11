@@ -100,7 +100,9 @@ end
 ---飞行
 function PlayerActState:Fly()
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
-    local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
+    local dir = (PlayerCtrl.finalDir + localPlayer.Forward).Normalized
+    dir.y = lvY
+    dir = dir.Normalized
     if PlayerCtrl.isSprint then
         localPlayer:AddMovementInput(dir, 1)
     else

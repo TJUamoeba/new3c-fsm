@@ -65,6 +65,16 @@ function PlayerCam:CameraZoom(_pos1, _pos2, _dis, _speed)
     end
 end
 
+-- 冲刺缩放
+function PlayerCam:CameraFOVZoom(_fovChange, _maxFov)
+    if _fovChange > 0 and this.curCamera.FieldOfView > _maxFov + 1 then
+        _fovChange = -0.2
+    elseif _fovChange > 0 and this.curCamera.FieldOfView > _maxFov then
+        _fovChange = 0
+    end
+    this.curCamera.FieldOfView = math.clamp(this.curCamera.FieldOfView + _fovChange, 60, 90)
+end
+
 -- 修改玩家当前相机
 function PlayerCam:SetCurCamEventHandler(_cam, _lookAt)
     this.curCamera = _cam or this.playerGameCam

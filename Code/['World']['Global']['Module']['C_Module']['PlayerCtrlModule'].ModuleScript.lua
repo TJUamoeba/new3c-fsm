@@ -78,7 +78,7 @@ end
 
 -- 获取移动方向
 function GetMoveDir()
-    forwardDir = PlayerCam:IsFreeMode() and PlayerCam.curCamera.Forward or localPlayer.Forward
+    forwardDir = PlayerCam:IsFreeMode() and PlayerCam.curCamera:GetDeferredForward() or localPlayer.Forward
     forwardDir.y = 0
     rightDir = Vector3(0, 1, 0):Cross(forwardDir)
     horizontal = GuiControl.joystick.Horizontal

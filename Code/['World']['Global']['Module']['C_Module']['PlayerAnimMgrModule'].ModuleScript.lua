@@ -4,6 +4,12 @@
 --- @author Dead Ratman
 local PlayerAnimMgr, this = ModuleUtil.New('PlayerAnimMgr', ClientBase)
 
+local ganderPrefix = {
+    [0] = 'Human',
+    [1] = 'Man',
+    [2] = 'Women'
+}
+
 --- 初始化
 function PlayerAnimMgr:Init()
     print('PlayerAnimMgr:Init')
@@ -18,15 +24,6 @@ end
 
 --- 数据变量初始化
 function PlayerAnimMgr:DataInit()
-    --[[local anims = {
-        'anim_human_swim_freestyle_01',
-        'anim_human_swim_breaststroke_01',
-        'anim_human_idletofreestyle_01',
-        'anim_human_freestyletoidle_01',
-        'anim_human_idletobreaststroke_01',
-        'anim_human_breaststroketoidle_01'
-    }
-    this:ImportAnimation(anims, 'Animation/')]]
 end
 
 --- 节点事件绑定
@@ -42,6 +39,7 @@ end
 
 --创建一个包含单个动作的混合空间节点,并设置动作速率
 function PlayerAnimMgr:CreateSingleClipNode(_animName, _speed)
+    local animName = ganderPrefix[localPlayer.Gander] .. _animName
     local node = localPlayer.Avatar:AddBlendSpaceSingleNode(false)
     node:AddClipSingle(_animName, _speed or 1)
     return node

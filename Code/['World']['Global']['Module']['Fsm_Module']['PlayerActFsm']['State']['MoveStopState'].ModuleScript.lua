@@ -18,7 +18,7 @@ function MoveStopState:initialize(_controller, _stateName)
     end
 end
 function MoveStopState:InitData()
-    self:AddTransition('ToIdleState', self.controller.states['IdleState'], 0.5)
+    self:AddTransition('ToIdleState', self.controller.states['IdleState'], 0.4)
     self:AddTransition(
         'ToMoveState',
         self.controller.states['MoveState'],
@@ -49,7 +49,7 @@ function MoveStopState:OnEnter()
     PlayerActState.OnEnter(self)
     local index = self:GetStopIndex()
     print(index, table.dump(self.anims[index]))
-    PlayerAnimMgr:Play(self.animNode[index], 0, 1, self.anims[index][3], self.anims[index][3], true, false, 1)
+    PlayerAnimMgr:Play(self.animNode[index], 0, 1, self.anims[index][3], 0, true, false, 1)
 end
 
 function MoveStopState:OnUpdate(dt)

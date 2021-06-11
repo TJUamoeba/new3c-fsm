@@ -74,6 +74,14 @@ function PlayerActState:Move(_isSprint)
     end
 end
 
+--更新镜头
+function PlayerActState:UpdateCam()
+    local acceleration = localPlayer:GetCurrentAcceleration().Magnitude
+    local fovChange = acceleration / 50 - 0.2
+    local fovMax = acceleration * 1.5 + 60
+    PlayerCam:CameraFOVZoom(fovChange, fovMax)
+end
+
 ---游泳
 function PlayerActState:Swim(_multiple)
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
@@ -92,7 +100,9 @@ end
 ---飞行
 function PlayerActState:Fly()
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
-    local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
+    local dir = (PlayerCtrl.finalDir + localPlayer.Forward).Normalized
+    dir.y = lvY
+    dir = dir.Normalized
     if PlayerCtrl.isSprint then
         localPlayer:AddMovementInput(dir, 1)
     else
@@ -180,6 +190,7 @@ end
 
 function PlayerActState:OnUpdate()
     StateBase.OnUpdate(self)
+    self:UpdateCam()
 end
 
 return PlayerActState

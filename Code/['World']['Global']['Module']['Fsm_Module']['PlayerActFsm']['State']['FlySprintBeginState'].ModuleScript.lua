@@ -3,10 +3,10 @@ local FlySprintBeginState = class('FlySprintBeginState', PlayerActState)
 function FlySprintBeginState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
     self.animNode = PlayerAnimMgr:CreateSingleClipNode('anim_woman_hovertofly_01')
-    self.animNode:AddAnimationEvent(0.5):Connect(
+    self.animNode:AddAnimationEvent(0.2):Connect(
         function()
             if self:MoveMonitor() then
-                localPlayer:AddImpulse(localPlayer.Forward * 500)
+                localPlayer:AddImpulse(localPlayer.Forward * 1000)
             end
         end
     )

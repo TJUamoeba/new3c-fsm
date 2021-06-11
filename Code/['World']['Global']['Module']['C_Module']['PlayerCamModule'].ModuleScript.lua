@@ -42,7 +42,8 @@ end
 function PlayerCam:IsFreeMode()
     return (this.curCamera.CameraMode == Enum.CameraMode.Social and this.curCamera.Distance >= 0) or
         this.curCamera.CameraMode == Enum.CameraMode.Orbital or
-        this.curCamera.CameraMode == Enum.CameraMode.Custom
+        this.curCamera.CameraMode == Enum.CameraMode.Custom or
+        this.curCamera.CameraMode == Enum.CameraMode.Smart
 end
 
 -- 滑屏转向

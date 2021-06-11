@@ -3,7 +3,11 @@
 --- @copyright Lilith Games, Avatar Team
 --- @author Dead Ratman
 local PlayerAnimMgr, this = ModuleUtil.New('PlayerAnimMgr', ClientBase)
-
+local clipNodes = {
+    [0] = {},
+    [1] = {},
+    [2] = {}
+}
 --- 初始化
 function PlayerAnimMgr:Init()
     print('PlayerAnimMgr:Init')
@@ -18,15 +22,6 @@ end
 
 --- 数据变量初始化
 function PlayerAnimMgr:DataInit()
-    --[[local anims = {
-        'anim_human_swim_freestyle_01',
-        'anim_human_swim_breaststroke_01',
-        'anim_human_idletofreestyle_01',
-        'anim_human_freestyletoidle_01',
-        'anim_human_idletobreaststroke_01',
-        'anim_human_breaststroketoidle_01'
-    }
-    this:ImportAnimation(anims, 'Animation/')]]
 end
 
 --- 节点事件绑定
@@ -41,9 +36,14 @@ function PlayerAnimMgr:ImportAnimation(_anims, _path)
 end
 
 --创建一个包含单个动作的混合空间节点,并设置动作速率
-function PlayerAnimMgr:CreateSingleClipNode(_animName, _speed)
+function PlayerAnimMgr:CreateSingleClipNode(_animName, _speed, _nodeName, _gender)
+    _gender = _gender or 0
+    print(_gender, table.dump(clipNodes))
     local node = localPlayer.Avatar:AddBlendSpaceSingleNode(false)
     node:AddClipSingle(_animName, _speed or 1)
+    if _nodeName then
+        clipNodes[_gender][_nodeName] = node
+    end
     return node
 end
 
@@ -54,25 +54,39 @@ end
 			{"anim_woman_walkfront_01", 0.25, 1.0}
 		}
 ]]
-function PlayerAnimMgr:Create1DClipNode(_anims, _param)
+function PlayerAnimMgr:Create1DClipNode(_anims, _param, _nodeName, _gender)
+    _gender = _gender or 0
     local node = localPlayer.Avatar:AddBlendSpace1DNode(_param)
     for _, v in pairs(_anims) do
         node:AddClip1D(v[1], v[2], v[3] or 1)
     end
+    if _nodeName then
+        clipNodes[_gender][_nodeName] = node
+    end
     return node
 end
 
-function PlayerAnimMgr:Create2DClipNode(_anims, _param1, _param2)
+function PlayerAnimMgr:Create2DClipNode(_anims, _param1, _param2, _nodeName, _gender)
+    _gender = _gender or 0
     local node = localPlayer.Avatar:AddBlendSpace2DNode(_param1, _param2)
     for _, v in pairs(_anims) do
         node:AddClip2D(v[1], v[2], v[3], v[4] or 1)
+    end
+    if _nodeName then
+        clipNodes[_gender][_nodeName] = node
     end
     return node
 end
 
 function PlayerAnimMgr:Play(_animNode, _layer, _weight, _transIn, _transOut, _isInterrupt, _isLoop, _speedScale)
+    local node = nil
+    if type(_animNode) == 'string' then
+        node = clipNodes[localPlayer.Avatar.Gender][_animNode] or clipNodes[0][_animNode]
+    else
+        node = _animNode
+    end
     localPlayer.Avatar:PlayBlendSpaceNode(
-        _animNode,
+        node,
         _layer,
         _weight or 1,
         _transIn or 0,

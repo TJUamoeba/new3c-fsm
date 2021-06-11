@@ -92,7 +92,7 @@ end
 ---飞行
 function PlayerActState:Fly()
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
-    local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
+    local dir = Vector3(PlayerCtrl.finalDir.Normalized.x, lvY, PlayerCtrl.finalDir.Normalized.z)
     if PlayerCtrl.isSprint then
         localPlayer:AddMovementInput(dir, 1)
     else
@@ -156,10 +156,13 @@ function PlayerActState:SpeedMonitor(_maxSpeed)
     local velocity = localPlayer.Velocity
     localPlayer.Avatar:SetParamValue('speedY', math.clamp((velocity.y / 10), -1, 1))
     velocity.y = 0
-    localPlayer.Avatar:SetParamValue('speedXZ', math.clamp((velocity.Magnitude / (_maxSpeed or 9)), 0, 1))
+    localPlayer.Avatar:SetParamValue(
+        'speedXZ',
+        math.clamp((velocity.Magnitude / (_maxSpeed or localPlayer.MaxWalkSpeed)), 0, 1)
+    )
     --print(math.clamp((velocity.Magnitude / (_maxSpeed or 9)), 0, 1))
     velocity = math.cos(math.rad(Vector3.Angle(velocity, localPlayer.Left))) * velocity.Magnitude
-    localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / (_maxSpeed or 9)), -1, 1))
+    localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / (_maxSpeed or localPlayer.MaxWalkSpeed)), -1, 1))
 end
 
 ---监听下落状态

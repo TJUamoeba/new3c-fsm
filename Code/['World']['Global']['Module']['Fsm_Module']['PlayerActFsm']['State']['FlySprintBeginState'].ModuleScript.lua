@@ -2,14 +2,15 @@ local FlySprintBeginState = class('FlySprintBeginState', PlayerActState)
 
 function FlySprintBeginState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
-    self.animNode = PlayerAnimMgr:CreateSingleClipNode('anim_woman_hovertofly_01')
-    self.animNode:AddAnimationEvent(0.5):Connect(
+    PlayerAnimMgr:CreateSingleClipNode('anim_man_hovertofly_01', 1.3, _stateName, 1)
+    PlayerAnimMgr:CreateSingleClipNode('anim_woman_hovertofly_01', 1, _stateName, 2)
+    --[[self.animNode:AddAnimationEvent(0.5):Connect(
         function()
             if self:MoveMonitor() then
                 localPlayer:AddImpulse(localPlayer.Forward * 500)
             end
         end
-    )
+    )]]
 end
 function FlySprintBeginState:InitData()
     self:AddTransition('ToFlySprintState', self.controller.states['FlySprintState'], 0.6)
@@ -25,7 +26,7 @@ end
 
 function FlySprintBeginState:OnEnter()
     PlayerActState.OnEnter(self)
-    PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, false, 0.8)
+    PlayerAnimMgr:Play(self.stateName, 0, 1, 0.2, 0.2, true, false, 0.8)
 end
 
 function FlySprintBeginState:OnUpdate(dt)

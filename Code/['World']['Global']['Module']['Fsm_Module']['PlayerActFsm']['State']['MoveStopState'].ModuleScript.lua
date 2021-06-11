@@ -12,9 +12,8 @@ function MoveStopState:initialize(_controller, _stateName)
         {'stopRS', 'anim_woman_stop_r_07', 0.2, 1.0},
         {'stopRR2', 'anim_woman_stop_r_06', 0.1, 1.0}
     }
-    self.animNode = {}
     for i, v in pairs(self.anims) do
-        self.animNode[i] = PlayerAnimMgr:CreateSingleClipNode(v[2])
+        PlayerAnimMgr:CreateSingleClipNode(v[2], v[4], _stateName .. i)
     end
 end
 function MoveStopState:InitData()
@@ -25,6 +24,14 @@ function MoveStopState:InitData()
         -1,
         function()
             return self:MoveMonitor()
+        end
+    )
+    self:AddTransition(
+        'ToJumpBeginState',
+        self.controller.states['JumpBeginState'],
+        -1,
+        function()
+            return self.controller.triggers['JumpBeginState']
         end
     )
     self:AddTransition(
@@ -49,7 +56,7 @@ function MoveStopState:OnEnter()
     PlayerActState.OnEnter(self)
     local index = self:GetStopIndex()
     print(index, table.dump(self.anims[index]))
-    PlayerAnimMgr:Play(self.animNode[index], 0, 1, self.anims[index][3], self.anims[index][3], true, false, 1)
+    PlayerAnimMgr:Play(self.stateName .. index, 0, 1, self.anims[index][3], self.anims[index][3], true, false, 1)
 end
 
 function MoveStopState:OnUpdate(dt)

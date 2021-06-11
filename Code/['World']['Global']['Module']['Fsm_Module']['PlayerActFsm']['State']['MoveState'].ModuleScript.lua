@@ -2,13 +2,21 @@ local MoveState = class('MoveState', PlayerActState)
 
 function MoveState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
-    local anims = {
+    local animsM = {
+        {'anim_man_idle_01', 0.0, 1.0},
+        {'anim_man_walkfront_01', 0.5, 1.0},
+        {'anim_man_runfront_01', 0.8, 1.0},
+        {'anim_man_sprint_01', 1, 1.0}
+    }
+
+    local animsW = {
         {'anim_woman_idle_01', 0.0, 1.0},
-        {'anim_woman_walkfront_01', 0.15, 1.0},
-        {'anim_woman_runfront_01', 0.5, 1.0},
+        {'anim_woman_walkfront_01', 0.5, 1.0},
+        {'anim_woman_runfront_01', 0.8, 1.0},
         {'anim_woman_sprint_01', 1, 1.0}
     }
-    self.animNode = PlayerAnimMgr:Create1DClipNode(anims, 'speedXZ')
+    PlayerAnimMgr:Create1DClipNode(animsM, 'speedXZ', _stateName, 1)
+    PlayerAnimMgr:Create1DClipNode(animsW, 'speedXZ', _stateName, 2)
 end
 function MoveState:InitData()
     self:AddTransition(
@@ -55,7 +63,7 @@ end
 
 function MoveState:OnEnter()
     PlayerActState.OnEnter(self)
-    PlayerAnimMgr:Play(self.animNode, 0, 1, 0.2, 0.2, true, true, 1)
+    PlayerAnimMgr:Play(self.stateName, 0, 1, 0.2, 0.2, true, true, 1)
 end
 
 function MoveState:OnUpdate(dt)

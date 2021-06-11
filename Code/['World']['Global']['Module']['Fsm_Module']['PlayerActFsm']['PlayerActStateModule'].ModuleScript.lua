@@ -74,14 +74,6 @@ function PlayerActState:Move(_isSprint)
     end
 end
 
---更新镜头
-function PlayerActState:UpdateCam()
-    local acceleration = localPlayer:GetCurrentAcceleration().Magnitude
-    local fovChange = acceleration / 50 - 0.2
-    local fovMax = acceleration * 1.5 + 60
-    PlayerCam:CameraFOVZoom(fovChange, fovMax)
-end
-
 ---游泳
 function PlayerActState:Swim(_multiple)
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
@@ -100,9 +92,7 @@ end
 ---飞行
 function PlayerActState:Fly()
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
-    local dir = (PlayerCtrl.finalDir + localPlayer.Forward).Normalized
-    dir.y = lvY
-    dir = dir.Normalized
+    local dir = Vector3(PlayerCtrl.finalDir.Normalized.x, lvY, PlayerCtrl.finalDir.Normalized.z)
     if PlayerCtrl.isSprint then
         localPlayer:AddMovementInput(dir, 1)
     else
@@ -166,10 +156,13 @@ function PlayerActState:SpeedMonitor(_maxSpeed)
     local velocity = localPlayer.Velocity
     localPlayer.Avatar:SetParamValue('speedY', math.clamp((velocity.y / 10), -1, 1))
     velocity.y = 0
-    localPlayer.Avatar:SetParamValue('speedXZ', math.clamp((velocity.Magnitude / (_maxSpeed or 9)), 0, 1))
+    localPlayer.Avatar:SetParamValue(
+        'speedXZ',
+        math.clamp((velocity.Magnitude / (_maxSpeed or localPlayer.MaxWalkSpeed)), 0, 1)
+    )
     --print(math.clamp((velocity.Magnitude / (_maxSpeed or 9)), 0, 1))
     velocity = math.cos(math.rad(Vector3.Angle(velocity, localPlayer.Left))) * velocity.Magnitude
-    localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / (_maxSpeed or 9)), -1, 1))
+    localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / (_maxSpeed or localPlayer.MaxWalkSpeed)), -1, 1))
 end
 
 ---监听下落状态
@@ -190,7 +183,6 @@ end
 
 function PlayerActState:OnUpdate()
     StateBase.OnUpdate(self)
-    self:UpdateCam()
 end
 
 return PlayerActState

@@ -2,8 +2,8 @@ local SwimmingStartState = class('SwimmingStartState', PlayerActState)
 
 function SwimmingStartState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
-    self.animFreestyleNode = PlayerAnimMgr:CreateSingleClipNode('anim_human_idletofreestyle_01')
-    self.animBreaststrokeNode = PlayerAnimMgr:CreateSingleClipNode('anim_human_idletobreaststroke_01')
+    PlayerAnimMgr:CreateSingleClipNode('anim_human_idletofreestyle_01', 1, _stateName .. 'Freestyle')
+    PlayerAnimMgr:CreateSingleClipNode('anim_human_idletobreaststroke_01', 1, _stateName .. 'Breaststroke')
 end
 
 function SwimmingStartState:InitData()
@@ -30,9 +30,9 @@ function SwimmingStartState:OnEnter()
     PlayerActState.OnEnter(self)
     if self:IsWaterSuface() then
         print('Freestyle')
-        PlayerAnimMgr:Play(self.animFreestyleNode, 0, 1, 0.1, 0.1, true, false, 1)
+        PlayerAnimMgr:Play(self.stateName .. 'Freestyle', 0, 1, 0.1, 0.1, true, false, 1)
     else
-        PlayerAnimMgr:Play(self.animBreaststrokeNode, 0, 1, 0.1, 0.1, true, false, 1.5)
+        PlayerAnimMgr:Play(self.stateName .. 'Breaststroke', 0, 1, 0.1, 0.1, true, false, 1.5)
     end
 end
 

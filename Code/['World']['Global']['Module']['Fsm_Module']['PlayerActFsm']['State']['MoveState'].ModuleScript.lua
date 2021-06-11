@@ -43,22 +43,6 @@ function MoveState:InitData()
             return self.controller.triggers['JumpHighestState']
         end
     )
-    self:AddTransition(
-        'ToCrouchBeginState',
-        self.controller.states['CrouchBeginState'],
-        -1,
-        function()
-            return self.controller.isCrouch
-        end
-    )
-    self:AddTransition(
-        'ToFlyBeginState',
-        self.controller.states['FlyBeginState'],
-        -1,
-        function()
-            return self.controller.triggers['FlyBeginState']
-        end
-    )
 end
 
 function MoveState:OnEnter()

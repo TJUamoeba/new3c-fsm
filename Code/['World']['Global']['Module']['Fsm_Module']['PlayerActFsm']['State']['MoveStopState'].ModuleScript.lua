@@ -34,28 +34,11 @@ function MoveStopState:InitData()
             return self.controller.triggers['JumpBeginState']
         end
     )
-    self:AddTransition(
-        'ToCrouchBeginState',
-        self.controller.states['CrouchBeginState'],
-        -1,
-        function()
-            return self.controller.isCrouch
-        end
-    )
-    self:AddTransition(
-        'ToFlyBeginState',
-        self.controller.states['FlyBeginState'],
-        -1,
-        function()
-            return self.controller.triggers['FlyBeginState']
-        end
-    )
 end
 
 function MoveStopState:OnEnter()
     PlayerActState.OnEnter(self)
     local index = self:GetStopIndex()
-    print(index, table.dump(self.anims[index]))
     PlayerAnimMgr:Play(self.stateName .. index, 0, 1, self.anims[index][3], self.anims[index][3], true, false, 1)
 end
 

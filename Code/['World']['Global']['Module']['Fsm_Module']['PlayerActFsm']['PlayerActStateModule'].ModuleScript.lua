@@ -4,18 +4,9 @@
 -- @author Dead Ratman
 local PlayerActState = class('PlayerActState', StateBase)
 
---水体
-local waterData = {}
-
 function PlayerActState:initialize(_controller, _stateName)
     print('ControllerBase:initialize()')
     StateBase.initialize(self, _controller, _stateName)
-    waterData = {
-        rangeMin = world.Water.Position -
-            Vector3(world.Water.Size.x / 2, world.Water.Size.y / 2, world.Water.Size.z / 2),
-        rangeMax = world.Water.Position +
-            Vector3(world.Water.Size.x / 2, world.Water.Size.y / 2, world.Water.Size.z / 2)
-    }
 end
 
 --获取停步时哪只脚在前以及双脚间距
@@ -74,41 +65,6 @@ function PlayerActState:Move(_isSprint)
     end
 end
 
----游泳
-function PlayerActState:Swim(_multiple)
-    local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
-    if self:IsWaterSuface() and lvY > 0 then
-        lvY = 0
-        localPlayer.Velocity.y = 0
-    end
-    if self:FloorMonitor(3) and lvY < 0 then
-        lvY = 0
-    end
-    local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
-    --print(dir)
-    localPlayer:AddMovementInput(dir, _multiple or 1)
-end
-
----飞行
-function PlayerActState:Fly()
-    local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
-    local dir = Vector3(PlayerCtrl.finalDir.Normalized.x, lvY, PlayerCtrl.finalDir.Normalized.z)
-    if PlayerCtrl.isSprint then
-        localPlayer:AddMovementInput(dir, 1)
-    else
-        localPlayer:AddMovementInput(dir, 0.5)
-    end
-end
-
----沉浮
-function PlayerActState:UpAndDown()
-    local lvY = PlayerCtrl.upright
-    if localPlayer:IsSwimming() and localPlayer.Position.y > waterData.rangeMax.y - 2 and lvY > 0 then
-        lvY = 0
-    end
-    localPlayer:AddMovementInput(Vector3(0, lvY, 0))
-end
-
 ---监听移动
 function PlayerActState:MoveMonitor()
     local dir = PlayerCtrl.finalDir
@@ -133,24 +89,6 @@ function PlayerActState:FloorMonitor(_dis)
     return false
 end
 
----监听游泳
-function PlayerActState:SwimMonitor()
-    if
-        localPlayer.Position.x > waterData.rangeMin.x and localPlayer.Position.x < waterData.rangeMax.x and
-            localPlayer.Position.y > waterData.rangeMin.y and
-            localPlayer.Position.y < waterData.rangeMax.y and
-            localPlayer.Position.z > waterData.rangeMin.z and
-            localPlayer.Position.z < waterData.rangeMax.z
-     then
-        if self:FloorMonitor(0.1) and localPlayer.Position.y > waterData.rangeMax.y - 1.5 then
-            return false
-        end
-        return true
-    else
-        return false
-    end
-end
-
 ---监听速度
 function PlayerActState:SpeedMonitor(_maxSpeed)
     local velocity = localPlayer.Velocity
@@ -169,15 +107,6 @@ end
 function PlayerActState:FallMonitor()
     if not self:FloorMonitor(0.5) and localPlayer.Velocity.y < 0.5 then
         self.controller:CallTrigger('JumpHighestState')
-    end
-end
-
----是否在水面
-function PlayerActState:IsWaterSuface()
-    if localPlayer.Position.y > waterData.rangeMax.y - 1.5 then
-        return true
-    else
-        return false
     end
 end
 

@@ -12,8 +12,6 @@ function PlayerActController:initialize(_stateMachineNode, _folder)
         self.triggers[k] = false
     end
     self.foot = 2
-    self.isCrouch = false
-    self.jumpCount = localPlayer.JumpMaxCount
 end
 
 function PlayerActController:CallTrigger(_stateName)

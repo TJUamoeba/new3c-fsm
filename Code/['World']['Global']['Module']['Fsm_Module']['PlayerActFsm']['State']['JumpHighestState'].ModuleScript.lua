@@ -15,22 +15,6 @@ function JumpHighestState:initialize(_controller, _stateName)
 end
 function JumpHighestState:InitData()
     self:AddTransition('ToFallState', self.controller.states['FallState'], 0.5)
-    self:AddTransition(
-        'ToDoubleJumpState',
-        self.controller.states['DoubleJumpState'],
-        -1,
-        function()
-            return self.controller.triggers['DoubleJumpState']
-        end
-    )
-    self:AddTransition(
-        'ToDoubleJumpSprintState',
-        self.controller.states['DoubleJumpSprintState'],
-        -1,
-        function()
-            return self.controller.triggers['DoubleJumpSprintState']
-        end
-    )
 end
 
 function JumpHighestState:OnEnter()

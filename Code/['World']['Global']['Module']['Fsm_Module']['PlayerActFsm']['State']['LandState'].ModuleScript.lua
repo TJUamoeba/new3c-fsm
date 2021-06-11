@@ -9,14 +9,6 @@ function LandState:initialize(_controller, _stateName)
 end
 function LandState:InitData()
     self:AddTransition(
-        'ToFlyBeginState',
-        self.controller.states['FlyBeginState'],
-        -1,
-        function()
-            return self.controller.triggers['FlyBeginState']
-        end
-    )
-    self:AddTransition(
         'ToJumpBeginState',
         self.controller.states['JumpBeginState'],
         -1,
@@ -45,7 +37,6 @@ function LandState:OnEnter()
         )
         PlayerAnimMgr:Play(self.stateName .. 1, 0, 1, 0.1, 0.1, true, false, 1)
     end
-    self.controller.jumpCount = localPlayer.JumpMaxCount
 end
 
 function LandState:OnUpdate(dt)

@@ -28,7 +28,6 @@ end
 
 function CrouchEndState:OnLeave()
     PlayerActState.OnLeave(self)
-    self.controller.foot = 2
     localPlayer:UnCrouch()
 end
 

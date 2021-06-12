@@ -74,6 +74,7 @@ function MoveState:OnUpdate(dt)
 end
 function MoveState:OnLeave()
     PlayerActState.OnLeave(self)
+    self.controller:GetStopInfo()
 end
 
 return MoveState

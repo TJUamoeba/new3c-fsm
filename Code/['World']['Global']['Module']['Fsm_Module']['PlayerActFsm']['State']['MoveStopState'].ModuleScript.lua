@@ -2,18 +2,31 @@ local MoveStopState = class('MoveStopState', PlayerActState)
 
 function MoveStopState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
-    self.anims = {
-        {'stopLW', 'anim_woman_stop_l_05', 0.2, 1.0},
-        {'stopLR1', 'anim_woman_stop_l_03', 0.1, 1.0},
-        {'stopLS', 'anim_woman_stop_l_07', 0.2, 1.0},
-        {'stopLR2', 'anim_woman_stop_l_06', 0.1, 1.0},
-        {'stopRW', 'anim_woman_stop_r_05', 0.2, 1.0},
-        {'stopRR1', 'anim_woman_stop_r_03', 0.1, 1.0},
-        {'stopRS', 'anim_woman_stop_r_07', 0.2, 1.0},
-        {'stopRR2', 'anim_woman_stop_r_06', 0.1, 1.0}
+    self.animsM= {
+        {'LW', 'anim_man_stop_l_05', 0.2, 1.0},
+        {'LR1', 'anim_man_stop_l_03', 0.2, 1.0},
+        {'LR2', 'anim_man_stop_l_07', 0.2, 1.0},
+        {'LS', 'anim_man_stop_l_06', 0.2, 1.0},
+        {'RW', 'anim_man_stop_r_05', 0.2, 1.0},
+        {'RR1', 'anim_man_stop_r_03', 0.2, 1.0},
+        {'RR2', 'anim_man_stop_r_07', 0.2, 1.0},
+        {'RS', 'anim_man_stop_r_06', 0.2, 1.0}
     }
-    for i, v in pairs(self.anims) do
-        PlayerAnimMgr:CreateSingleClipNode(v[2], v[4], _stateName .. i)
+    self.animsW = {
+        {'LW', 'anim_woman_stop_l_05', 0.2, 1.0},
+        {'LR1', 'anim_woman_stop_l_03', 0.2, 1.0},
+        {'LR2', 'anim_woman_stop_l_07', 0.2, 1.0},
+        {'LS', 'anim_woman_stop_l_06', 0.2, 1.0},
+        {'RW', 'anim_woman_stop_r_05', 0.2, 1.0},
+        {'RR1', 'anim_woman_stop_r_03', 0.2, 1.0},
+        {'RR2', 'anim_woman_stop_r_07', 0.2, 1.0},
+        {'RS', 'anim_woman_stop_r_06', 0.2, 1.0}
+    }
+    for i, v in pairs(self.animsM) do
+        PlayerAnimMgr:CreateSingleClipNode(v[2], v[4], _stateName .. i, 1)
+    end
+    for i, v in pairs(self.animsW) do
+        PlayerAnimMgr:CreateSingleClipNode(v[2], v[4], _stateName .. i, 2)
     end
 end
 function MoveStopState:InitData()
@@ -52,11 +65,31 @@ function MoveStopState:InitData()
     )
 end
 
+--确定该播放哪个停步动作
+function MoveStopState:GetStopIndex()
+    local stopSSpeed = 0.9
+    local stopRSpeed = 0.6
+    local stopDisGap = 0.7
+    local index = 1
+    if math.clamp(self.controller.stopInfo.speed / localPlayer.MaxWalkSpeed, 0, 1) > stopSSpeed then
+        index = 4
+    elseif math.clamp(self.controller.stopInfo.speed / localPlayer.MaxWalkSpeed, 0, 1) > stopRSpeed then
+        if self.controller.stopInfo.footDis > stopDisGap then
+            index = 2
+        else
+            index = 3
+        end
+    end
+    if self.controller.stopInfo.footIndex == 1 then
+        index = index + 4
+    end
+    return index
+end
+
 function MoveStopState:OnEnter()
     PlayerActState.OnEnter(self)
     local index = self:GetStopIndex()
-    print(index, table.dump(self.anims[index]))
-    PlayerAnimMgr:Play(self.stateName .. index, 0, 1, self.anims[index][3], self.anims[index][3], true, false, 1)
+    PlayerAnimMgr:Play(self.stateName .. index, 0, 1, 0.2, 0.2, true, false, 1)
 end
 
 function MoveStopState:OnUpdate(dt)

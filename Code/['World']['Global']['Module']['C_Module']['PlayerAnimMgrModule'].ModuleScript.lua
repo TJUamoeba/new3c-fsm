@@ -81,7 +81,9 @@ end
 function PlayerAnimMgr:Play(_animNode, _layer, _weight, _transIn, _transOut, _isInterrupt, _isLoop, _speedScale)
     local node = nil
     if type(_animNode) == 'string' then
+        print('Play', _animNode)
         node = clipNodes[localPlayer.Avatar.Gender][_animNode] or clipNodes[0][_animNode]
+        print(node)
     else
         node = _animNode
     end

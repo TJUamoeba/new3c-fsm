@@ -36,7 +36,7 @@ end
 
 function CrouchIdleState:OnEnter()
     PlayerActState.OnEnter(self)
-    if self.controller.foot == 1 then
+    if self.controller.stopInfo.footIndex == 1 then
         PlayerAnimMgr:Play(self.stateName .. 'Right', 0, 1, 0.2, 0.2, true, true, 1)
     else
         PlayerAnimMgr:Play(self.stateName .. 'Left', 0, 1, 0.2, 0.2, true, true, 1)

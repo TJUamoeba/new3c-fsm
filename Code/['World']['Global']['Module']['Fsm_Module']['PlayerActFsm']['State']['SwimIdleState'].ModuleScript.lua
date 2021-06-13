@@ -11,13 +11,6 @@ function SwimIdleState:initialize(_controller, _stateName)
 end
 
 function SwimIdleState:InitData()
-    self:AddAnyState(
-        'ToSwimIdleState',
-        -1,
-        function()
-            return self:SwimMonitor() and not localPlayer:IsSwimming()
-        end
-    )
     self:AddTransition(
         'ToSwimmingStartState',
         self.controller.states['SwimmingStartState'],
@@ -27,8 +20,8 @@ function SwimIdleState:InitData()
         end
     )
     self:AddTransition(
-        'ToIdleState',
-        self.controller.states['IdleState'],
+        'ToSwimEndState',
+        self.controller.states['SwimEndState'],
         -1,
         function()
             return not self:SwimMonitor()

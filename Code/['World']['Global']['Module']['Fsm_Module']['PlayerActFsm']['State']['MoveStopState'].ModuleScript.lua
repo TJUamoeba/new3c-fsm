@@ -68,7 +68,7 @@ end
 --确定该播放哪个停步动作
 function MoveStopState:GetStopIndex()
     local stopSSpeed = 0.9
-    local stopRSpeed = 0.6
+    local stopRSpeed = 0.4
     local stopDisGap = 0.7
     local index = 1
     if math.clamp(self.controller.stopInfo.speed / localPlayer.MaxWalkSpeed, 0, 1) > stopSSpeed then

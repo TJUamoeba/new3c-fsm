@@ -18,8 +18,8 @@ function SwimmingState:InitData()
         end
     )
     self:AddTransition(
-        'ToIdleState',
-        self.controller.states['IdleState'],
+        'ToSwimEndState',
+        self.controller.states['SwimEndState'],
         -1,
         function()
             return not self:SwimMonitor()

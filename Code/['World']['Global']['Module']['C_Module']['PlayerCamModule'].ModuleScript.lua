@@ -65,7 +65,7 @@ function PlayerCam:CameraZoom(_pos1, _pos2, _dis, _speed)
     end
 end
 
--- 冲刺缩放
+-- Fov缩放
 function PlayerCam:CameraFOVZoom(_fovChange, _maxFov)
     if _fovChange > 0 and this.curCamera.FieldOfView > _maxFov + 1 then
         _fovChange = -0.2

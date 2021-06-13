@@ -4,15 +4,15 @@ function MoveState:initialize(_controller, _stateName)
     PlayerActState.initialize(self, _controller, _stateName)
     local animsM = {
         {'anim_man_idle_01', 0.0, 1.0},
-        {'anim_man_walkfront_01', 0.5, 1.0},
-        {'anim_man_runfront_01', 0.8, 1.0},
+        {'anim_man_walkfront_01', 0.25, 1.0},
+        {'anim_man_runfront_01', 0.5, 1.0},
         {'anim_man_sprint_01', 1, 1.0}
     }
 
     local animsW = {
         {'anim_woman_idle_01', 0.0, 1.0},
-        {'anim_woman_walkfront_01', 0.5, 1.0},
-        {'anim_woman_runfront_01', 0.8, 1.0},
+        {'anim_woman_walkfront_01', 0.25, 1.0},
+        {'anim_woman_runfront_01', 0.5, 1.0},
         {'anim_woman_sprint_01', 1, 1.0}
     }
     PlayerAnimMgr:Create1DClipNode(animsM, 'speedXZ', _stateName, 1)

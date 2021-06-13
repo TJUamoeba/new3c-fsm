@@ -16,7 +16,6 @@ function PlayerActState:initialize(_controller, _stateName)
         rangeMax = world.Water.Position +
             Vector3(world.Water.Size.x / 2, world.Water.Size.y / 2, world.Water.Size.z / 2)
     }
-    
 end
 
 ---移动
@@ -103,7 +102,7 @@ function PlayerActState:SwimMonitor()
             localPlayer.Position.z > waterData.rangeMin.z and
             localPlayer.Position.z < waterData.rangeMax.z
      then
-        if self:FloorMonitor(0.1) and localPlayer.Position.y > waterData.rangeMax.y - 1.5 then
+        if self:FloorMonitor(0.05) and localPlayer.Position.y > waterData.rangeMax.y - 0.2 then
             return false
         end
         return true
@@ -135,15 +134,36 @@ end
 
 ---是否在水面
 function PlayerActState:IsWaterSuface()
-    if localPlayer.Position.y > waterData.rangeMax.y - 1.5 then
+    if localPlayer.Position.y > waterData.rangeMax.y - 1 then
         return true
     else
         return false
     end
 end
 
+---镜头更新
+function PlayerActState:CamUpdate()
+    local maxFov = 0
+    local changeSpeed = localPlayer.Velocity.Magnitude
+    if changeSpeed > 20 then
+        maxFov = 90
+    elseif changeSpeed > 10 then
+        maxFov = 75
+    elseif changeSpeed > 5 then
+        maxFov = 70
+    elseif changeSpeed > 1 then
+        maxFov = 65
+    else
+        maxFov = 60
+        changeSpeed = -50
+    end
+    changeSpeed = changeSpeed / 100
+    PlayerCam:CameraFOVZoom(changeSpeed, maxFov)
+end
+
 function PlayerActState:OnUpdate()
     StateBase.OnUpdate(self)
+    self:CamUpdate()
 end
 
 return PlayerActState

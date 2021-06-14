@@ -11,7 +11,6 @@ end
 
 function SwimEndState:OnEnter()
     PlayerActState.OnEnter(self)
-    localPlayer:SetSwimming(false)
     PlayerAnimMgr:Play(self.stateName, 0, 1, 0.2, 0.2, true, false, 1)
 end
 
@@ -21,6 +20,7 @@ end
 
 function SwimEndState:OnLeave()
     PlayerActState.OnLeave(self)
+    localPlayer:SetSwimming(false)
 end
 
 return SwimEndState

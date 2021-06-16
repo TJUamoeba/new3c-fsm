@@ -16,6 +16,14 @@ end
 function JumpHighestState:InitData()
     self:AddTransition('ToFallState', self.controller.states['FallState'], 0.5)
     self:AddTransition(
+        'ToLandState',
+        self.controller.states['LandState'],
+        -1,
+        function()
+            return self:FloorMonitor(0.5)
+        end
+    )
+    self:AddTransition(
         'ToDoubleJumpState',
         self.controller.states['DoubleJumpState'],
         -1,

@@ -12,6 +12,12 @@ end
 function SwimEndState:OnEnter()
     PlayerActState.OnEnter(self)
     PlayerAnimMgr:Play(self.stateName, 0, 1, 0.2, 0.2, true, false, 1)
+    invoke(
+        function()
+            localPlayer:StopMovementImmediately()
+        end,
+        0.3
+    )
 end
 
 function SwimEndState:OnUpdate(dt)

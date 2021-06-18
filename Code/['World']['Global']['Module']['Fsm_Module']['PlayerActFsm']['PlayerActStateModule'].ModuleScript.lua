@@ -64,7 +64,7 @@ end
 ---沉浮
 function PlayerActState:UpAndDown()
     local lvY = PlayerCtrl.upright
-    if localPlayer:IsSwimming() and localPlayer.Position.y > waterData.rangeMax.y - 2 and lvY > 0 then
+    if self:IsWaterSuface(1) and localPlayer.Position.y > waterData.rangeMax.y - 2 and lvY > 0 then
         lvY = 0
     end
     localPlayer:AddMovementInput(Vector3(0, lvY, 0))

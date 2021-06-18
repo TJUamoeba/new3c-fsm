@@ -41,7 +41,7 @@ function PlayerActController:SwitchCrouch()
     end
 end
 
---获取停步时哪只脚在前以及双脚间距
+---获取停步时哪只脚在前以及双脚间距
 function PlayerActController:GetStopInfo()
     local lToe = localPlayer.Avatar.Bone_L_Toe0
     local rToe = localPlayer.Avatar.Bone_R_Toe0
@@ -52,7 +52,7 @@ function PlayerActController:GetStopInfo()
     return self.stopInfo.footIndex == 2, self.stopInfo.footDis
 end
 
---切换状态
+---切换状态
 function PlayerActController:Switch(_state)
     if _state and self.curState ~= _state then
         self.lastState = self.curState

@@ -1,24 +1,24 @@
 --- 玩家动作状态
--- @module  PlayerActState
--- @copyright Lilith Games, Avatar Team
--- @author Dead Ratman
+--- @class  PlayerActState
+--- @copyright Lilith Games, Avatar Team
+--- @author Dead Ratman
 local PlayerActState = class('PlayerActState', StateBase)
 
 --水体
+local waterCol = world.Water
 local waterData = {}
 
 function PlayerActState:initialize(_controller, _stateName)
     print('ControllerBase:initialize()')
     StateBase.initialize(self, _controller, _stateName)
     waterData = {
-        rangeMin = world.Water.Position -
-            Vector3(world.Water.Size.x / 2, world.Water.Size.y / 2, world.Water.Size.z / 2),
-        rangeMax = world.Water.Position +
-            Vector3(world.Water.Size.x / 2, world.Water.Size.y / 2, world.Water.Size.z / 2)
+        rangeMin = waterCol.Position - Vector3(waterCol.Size.x / 2, waterCol.Size.y / 2, waterCol.Size.z / 2),
+        rangeMax = waterCol.Position + Vector3(waterCol.Size.x / 2, waterCol.Size.y / 2, waterCol.Size.z / 2)
     }
 end
 
----移动
+--- 移动，每帧调用
+--- @param _isSprint boolean 是否有冲刺输入
 function PlayerActState:Move(_isSprint)
     _isSprint = _isSprint or false
     local dir = PlayerCtrl.finalDir
@@ -34,8 +34,8 @@ function PlayerActState:Move(_isSprint)
     end
 end
 
----游泳
-function PlayerActState:Swim(_multiple)
+--- 游泳，每帧调用
+function PlayerActState:Swim()
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
     if self:IsWaterSuface() and lvY > 0 then
         lvY = -3 * localPlayer.Velocity.y
@@ -47,10 +47,10 @@ function PlayerActState:Swim(_multiple)
     end
     local dir = Vector3(PlayerCtrl.finalDir.x, lvY, PlayerCtrl.finalDir.z)
     --print(dir, localPlayer.Velocity.y)
-    localPlayer:AddMovementInput(dir, _multiple or 1)
+    localPlayer:AddMovementInput(dir, 1)
 end
 
----飞行
+--- 飞行，每帧调用
 function PlayerActState:Fly()
     local lvY = self:MoveMonitor() and math.clamp((PlayerCam.playerGameCam.Forward.y + 0.2), -1, 1) or 0
     local dir = Vector3(PlayerCtrl.finalDir.Normalized.x, lvY, PlayerCtrl.finalDir.Normalized.z)
@@ -61,7 +61,7 @@ function PlayerActState:Fly()
     end
 end
 
----沉浮
+--- 上下沉浮，每帧调用
 function PlayerActState:UpAndDown()
     local lvY = PlayerCtrl.upright
     if self:IsWaterSuface(1) and localPlayer.Position.y > waterData.rangeMax.y - 2 and lvY > 0 then
@@ -70,7 +70,8 @@ function PlayerActState:UpAndDown()
     localPlayer:AddMovementInput(Vector3(0, lvY, 0))
 end
 
----监听移动
+--- 监听移动
+--- @return boolean 是否移动 
 function PlayerActState:MoveMonitor()
     local dir = PlayerCtrl.finalDir
     dir.y = 0
@@ -81,7 +82,9 @@ function PlayerActState:MoveMonitor()
     end
 end
 
---监听是否在地面上
+--- 地面监听
+--- @param _dis boolean 距离地面的最大距离
+--- @return boolean 是否落地 
 function PlayerActState:FloorMonitor(_dis)
     local startPos = localPlayer.Position
     local endPos = localPlayer.Position + Vector3.Down * (_dis or 0.03)
@@ -94,7 +97,8 @@ function PlayerActState:FloorMonitor(_dis)
     return false
 end
 
----监听游泳
+--- 监听游泳
+--- @return boolean 是否满足游泳条件 
 function PlayerActState:SwimMonitor()
     if
         localPlayer.Position.x > waterData.rangeMin.x and localPlayer.Position.x < waterData.rangeMax.x and
@@ -112,7 +116,7 @@ function PlayerActState:SwimMonitor()
     end
 end
 
----监听速度
+---监听速度 更新speedY speedXZ speedX
 function PlayerActState:SpeedMonitor(_maxSpeed)
     local velocity = localPlayer.Velocity
     localPlayer.Avatar:SetParamValue('speedY', math.clamp((velocity.y / 10), -1, 1))
@@ -126,7 +130,7 @@ function PlayerActState:SpeedMonitor(_maxSpeed)
     localPlayer.Avatar:SetParamValue('speedX', math.clamp((velocity / (_maxSpeed or localPlayer.MaxWalkSpeed)), -1, 1))
 end
 
----监听下落状态
+--- 监听下落状态
 function PlayerActState:FallMonitor()
     if not self:FloorMonitor(0.5) and localPlayer.Velocity.y < 0.5 and not localPlayer.IsOnGround then
         self.controller:CallTrigger('JumpHighestState')

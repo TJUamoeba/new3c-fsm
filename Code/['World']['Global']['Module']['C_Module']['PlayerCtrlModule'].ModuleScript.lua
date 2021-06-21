@@ -61,6 +61,15 @@ function PlayerCtrl:EventBind()
             end
         end
     )
+    localPlayer.OnCollisionBegin:Connect(
+        function(_hitObj, _hitPos)
+            print(_hitObj)
+            if _hitObj.Name == 'SitPoint' then
+                print(_hitObj, '------------------------------------------')
+                this:PlayerSit(_hitObj)
+            end
+        end
+    )
 end
 --获取按键盘时的移动方向最终取值
 function GetKeyValue()
@@ -97,7 +106,8 @@ end
 
 -- 跳跃逻辑
 function PlayerCtrl:PlayerJump()
-    print('jumpCount', FsmMgr.playerActCtrl.jumpCount)
+    --print('jumpCount', FsmMgr.playerActCtrl.jumpCount)
+    FsmMgr.playerActCtrl:CallTrigger('SitEndState')
     if FsmMgr.playerActCtrl.jumpCount == 3 then
         FsmMgr.playerActCtrl:CallTrigger('JumpBeginState')
     elseif FsmMgr.playerActCtrl.jumpCount == 2 then
@@ -115,6 +125,12 @@ end
 -- 飞行逻辑
 function PlayerCtrl:PlayerFly()
     FsmMgr.playerActCtrl:CallTrigger('FlyBeginState')
+end
+
+-- 坐下逻辑
+function PlayerCtrl:PlayerSit(_sitPoint)
+    FsmMgr.playerActCtrl.seatObj = _sitPoint
+    FsmMgr.playerActCtrl:CallTrigger('SitBeginState')
 end
 
 function PlayerCtrl:Update(dt)

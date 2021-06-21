@@ -13,6 +13,7 @@ function PlayerActController:initialize(_stateMachineNode, _folder)
     end
     self.isCrouch = false
     self.jumpCount = localPlayer.JumpMaxCount
+    self.seatObj = nil
     self.stopInfo = {
         footIndex = 2,
         footDis = 0,

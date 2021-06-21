@@ -11,7 +11,7 @@ function FallState:initialize(_controller, _stateName)
         {'anim_woman_jumpforward_falldownloop_02', 0.5, 1.0}
     }
     PlayerAnimMgr:Create1DClipNode(animsM, 'speedXZ', _stateName, 1)
-    PlayerAnimMgr:Create1DClipNode(animsM, 'speedXZ', _stateName, 2)
+    PlayerAnimMgr:Create1DClipNode(animsW, 'speedXZ', _stateName, 2)
 end
 function FallState:InitData()
     self:AddTransition(

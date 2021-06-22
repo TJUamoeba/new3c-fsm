@@ -36,6 +36,12 @@ PlayerActState:SpeedMonitor(_maxSpeed) --速度监听 @param _maxSpeed 目前的
 * 描述：新3C状态机系统
 * 编辑器版本：线上版
 
+## Input Setting
+* WSAD 上下左右
+* Shift 冲刺
+* F 飞行
+* Q 上浮 E 下沉（仅在飞行和游泳）
+
 
 ## Video
 [![fsm](https://user-images.githubusercontent.com/4829591/122093827-0ad5a580-ce3e-11eb-9a12-fb56a91f5672.jpg)](https://user-images.githubusercontent.com/4829591/122094080-525c3180-ce3e-11eb-83a1-22a67765ff66.mp4)

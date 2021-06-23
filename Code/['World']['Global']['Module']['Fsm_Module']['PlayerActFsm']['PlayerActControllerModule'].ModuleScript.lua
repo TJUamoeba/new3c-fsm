@@ -19,6 +19,17 @@ function PlayerActController:initialize(_stateMachineNode, _folder)
         footDis = 0,
         speed = 0
     }
+    self.actInfo = {
+        anim = {},
+        dur = {},
+        speed = 1,
+        layer = 0,
+        transIn = 0,
+        transOut = 0,
+        isInterrupt = true,
+        isLoop = false,
+        speedScale = 1
+    }
 end
 
 function PlayerActController:CallTrigger(_stateName)
@@ -60,6 +71,13 @@ function PlayerActController:Switch(_state)
         self.curState = _state
         self.machine:GotoState(self.statesInMachine[_state.stateName])
         self:ResetTrigger()
+    end
+end
+
+---获取动作信息
+function PlayerActController:GetActInfo(_info)
+    for k, v in pairs(_info) do
+        self.actInfo[k] = v
     end
 end
 

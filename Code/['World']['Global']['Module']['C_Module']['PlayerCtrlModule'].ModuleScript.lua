@@ -133,8 +133,8 @@ function PlayerCtrl:PlayerSit(_sitPoint)
     FsmMgr.playerActCtrl:CallTrigger('SitBeginState')
 end
 
-function PlayerCtrl:Test()
-    FsmMgr.playerActCtrl:GetActInfo(Config.ActAnim[1])
+function PlayerCtrl:Test(_id)
+    FsmMgr.playerActCtrl:GetActInfo(Config.ActAnim[_id])
     FsmMgr.playerActCtrl:CallTrigger('ActBeginState')
 end
 
